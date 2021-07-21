@@ -1,19 +1,25 @@
 "use strict";
 
 const foo = (function () {
-    let num = 0;
-    let i = 2;
+    let accumVal = 0;
+    let addVal = 2;
 
     return function () {
-        if (num % 5 === 0 && num) {
-            i = 3;
-            num /= 5;
-            return num;
-        } else if (num % 7 === 0 && num) {
-            i = 1;
-            num -= 7;
-            return num;
-        } else return num += i;
+        if (accumVal % 5 === 0 && accumVal) {
+            addVal = 3;
+            accumVal /= 5;
+
+            return accumVal;
+        }
+        
+        else if (accumVal % 7 === 0 && accumVal) {
+            addVal = 1;
+            accumVal -= 7;
+
+            return accumVal;
+        } 
+        
+        else return accumVal += addVal;
     }
 }());
 
