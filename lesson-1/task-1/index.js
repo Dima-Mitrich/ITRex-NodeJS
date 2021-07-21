@@ -10,20 +10,21 @@ function setSameCarSettings(num) {
     setStability(num);
 }
 
-function beginner() {
+function setBeginnerLevel() {
+    console.log('Beginner level: ')
     setSameCarSettings(5);
 }
 
-function goodDriver() {
+function setGoodDriverLevel() {
+    console.log('Good driver level: ')
     setSameCarSettings(3);
 }
 
-function maniac() {
+function setManiacLevel() {
+    console.log('Maniac level: ')
     setSameCarSettings(1);
 }
 
-beginner();
-console.log('*********************');
-goodDriver();
-console.log('*********************');
-maniac();
+setBeginnerLevel();
+setGoodDriverLevel();
+setManiacLevel();
