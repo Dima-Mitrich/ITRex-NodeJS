@@ -55,125 +55,86 @@ class Converter {
     }
 }
 
-
-
-class MultiplicationNumbers {
+class Calculator {
 
     constructor(converter, resView) {
-
         this.resView = resView.toLowerCase();
         this.converter = converter;
+    }
+
+    handleResult(result) {
+
+        if (result < 0) {
+            console.log("can't convert negative numbers");
+            return result;
+        }
+
+        switch (this.resView) {
+            case ('morze'):
+                return this.converter.toMorze(result);
+            case ('romanian'):
+                return this.converter.toRomanian(result);
+            case ('arabian'):
+                return result;
+            default:
+                return result
+        }
+    }
+}
+
+
+class MultiplicationNumbers extends Calculator {
+
+    constructor(converter, resView) {
+        super(converter, resView);
     }
 
     calculate(x, y) {
         let result = x * y;
 
-        if (result < 0) {
-            console.log("can't convert negative numbers");
-            return result;
-        }
-
-        switch (this.resView) {
-            case ('morze'):
-                return this.converter.toMorze(result);
-            case ('romanian'):
-                return this.converter.toRomanian(result);
-            case ('arabian'):
-                return result;
-            default:
-                return result
-        }
+        return this.handleResult(result);
     }
 }
 
 
-class AdditionNumbers {
+class AdditionNumbers extends Calculator {
 
     constructor(converter, resView) {
-
-        this.resView = resView.toLowerCase();
-        this.converter = converter;
+        super(converter, resView);
     }
 
     calculate(x, y) {
         let result = x + y;
 
-        if (result < 0) {
-            console.log("can't convert negative numbers");
-            return result;
-        }
-
-        switch (this.resView) {
-            case ('morze'):
-                return this.converter.toMorze(result);
-            case ('romanian'):
-                return this.converter.toRomanian(result);
-            case ('arabian'):
-                return result;
-            default:
-                return result
-        }
+        return this.handleResult(result);
     }
 }
 
 
-class SubtractionNumbers {
+class SubtractionNumbers extends Calculator {
 
     constructor(converter, resView) {
-
-        this.resView = resView.toLowerCase();
-        this.converter = converter;
+        super(converter, resView);
     }
 
     calculate(x, y) {
-        let result = x - y;
+        let result = x + y;
 
-        if (result < 0) {
-            console.log("can't convert negative numbers");
-            return result;
-        }
-
-        switch (this.resView) {
-            case ('morze'):
-                return this.converter.toMorze(result);
-            case ('romanian'):
-                return this.converter.toRomanian(result);
-            case ('arabian'):
-                return result;
-            default:
-                return result
-        }
+        return this.handleResult(result);
     }
 }
 
 
-class DivisionNumbers {
+class DivisionNumbers extends Calculator {
 
     constructor(converter, resView) {
-
-        this.resView = resView.toLowerCase();
-        this.converter = converter;
+        super(converter, resView);
     }
 
     calculate(x, y) {
         let result = x / y;
-        result = Math.floor(result);
 
-        if (result < 0) {
-            console.log("can't convert negative numbers");
-            return result;
-        }
-
-        switch (this.resView) {
-            case ('morze'):
-                return this.converter.toMorze(result);
-            case ('romanian'):
-                return this.converter.toRomanian(result);
-            case ('arabian'):
-                return result;
-            default:
-                return result
-        }
+        return this.handleResult(result);
     }
 }
 
