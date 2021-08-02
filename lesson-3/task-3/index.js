@@ -9,22 +9,30 @@ class GetUsersFromApi {
     getUsers = async () => {
 
         try {
-            
-            let fetchingUser = async () => {
 
+            let fetchingUser = async () => {
                 let response = await fetch(`https://randomuser.me/api/?results=${this.numberOFusers}`);
-                
+
                 let json = await response.json();
                 return json;
-
             }
 
             let usersObj = await fetchingUser();
             let usersArr = usersObj.results;
-            let resultStr = '';
+            let resultStr = this.createFinalString(usersArr);
 
-            usersArr.forEach((element, index) => {
-                resultStr += `
+            console.log(resultStr);
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    createFinalString(usersArray) {
+        let resultStr = '';
+
+        usersArray.forEach((element, index) => {
+            resultStr += `
             Person #${index + 1}:
             name: ${element.name.title} ${element.name.first} ${element.name.last};
             gender: ${element.gender};
@@ -35,13 +43,9 @@ class GetUsersFromApi {
             ${element.location.street.name} street, ${element.location.street.number};
             
             `
-            });
+        });
 
-            console.log(resultStr);
-
-        } catch (err) {
-            console.log(err)
-        }
+        return resultStr;
     }
 }
 
