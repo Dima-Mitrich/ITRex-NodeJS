@@ -4,9 +4,11 @@ import PatientQueue from './PatientQueue.js';
 import Patient from './Patient.js';
 import Resolution from './Resolution.js';
 import ResolutionList from './ResolutionList.js';
+import Storage from './ResolutionStorage.js';
 
 const queue = new PatientQueue();
 const resolutionList = new ResolutionList();
+const storage = new Storage();
 let currentPatient = null;
 
 //находим все кнопки
@@ -21,6 +23,7 @@ const newPatinetNameInput = document.getElementById('newPatientName');
 const newResolutionInput = document.getElementById('newResolutionInput');
 const searchResolutionDoctorInput = document.getElementById('searchResolution__doctorInterface');
 const searchResolutionPatientInput = document.getElementById('searchResolution__patientInterface');
+const addResolutionWithTTLCheckbox = document.getElementById('add-ttl-checkbox');
 
 //находим все дивы
 const queueListDoctorInterface = document.getElementById('currentPatientName_doctorInterface');
@@ -48,7 +51,8 @@ document.addEventListener('keydown', findResolutionForPatient);
 function addNewPatient() {
     const patientName = newPatinetNameInput.value;
 
-    queue.addPatient(new Patient(patientName));
+    const newPatinet = new Patient(patientName);
+    queue.addPatient(newPatinet);
     nextPatientButton.disabled = false;
     dischargeInput(newPatinetNameInput, addNewPatientButton);
 }
@@ -82,6 +86,16 @@ function addNewResolutionForCurrentPatient() {
 
     currentPatient.addResolution(newResolution);
     resolutionList.addNewResolution(newResolution);
+
+    if (addResolutionWithTTLCheckbox.checked) {
+        storage.addKeyWithTTL(currentPatient.name, newResolution);
+    }
+    else {
+        storage.addKey(currentPatient.name, newResolution);
+    }
+
+    console.log(storage);
+    setTimeout(() => console.log(storage), 11000);
 
     dischargeInput(newResolutionInput, addNewResolutionButton);
 }

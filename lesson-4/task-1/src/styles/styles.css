@@ -91,6 +91,12 @@ body {
     margin-left: 18%;
 }
 
+#add-ttl-checkbox {
+    height: 15px;
+    width: 15px;
+    margin-left: 5%;
+}
+
 .doctor-page__set-resolution-section button {
     margin-left: 22%;
 }
