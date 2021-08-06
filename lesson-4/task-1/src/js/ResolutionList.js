@@ -1,21 +1,28 @@
-"use strict";
-
 export default class ResolutionList {
-
     constructor() {
-        this.resolutionList = [];
-        this.currentResolution;
+        this.resolutionList = {};
+        this.currentResolution = null;
     }
 
-    addNewResolution(resolution) {
-        this.resolutionList.push(resolution);
+    addNewResolution(resolution, ttl = false) {
+        const patientName = resolution.patient.name;
+
+        if (!(patientName in this.resolutionList)) {
+            this.resolutionList[patientName] = resolution;
+        } else {
+            this.resolutionList[patientName].content += ` | ${resolution.content}`;
+        }
+
+        if (ttl) {
+            setTimeout(() => this.deleteResolution(patientName), 10000);
+        }
     }
 
     findResolution(patientName, isFromDoctor) {
-        let result = this.resolutionList.find(elem => elem.patient.name === patientName);
+        const result = this.resolutionList[patientName];
 
         if (!result) {
-            return 'There is no such patient';
+            return null;
         }
 
         if (isFromDoctor) {
@@ -26,7 +33,7 @@ export default class ResolutionList {
         }
     }
 
-    deleteResolution() {
-        this.resolutionList = this.resolutionList.filter(elem => elem !== this.currentResolution);
+    deleteResolution(key) {
+        delete this.resolutionList[key];
     }
 }

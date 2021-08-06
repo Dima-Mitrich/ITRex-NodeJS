@@ -1,7 +1,4 @@
-"use strict";
-
-export default class PatientQueue {
-
+export default class PatientList {
     constructor() {
         this.queue = [];
     }

@@ -1,10 +1,7 @@
-"use strict";
-
 export default class Patient {
-
     constructor(name) {
         this.name = name;
-        this.resolution;
+        this.resolution = null;
     }
 
     addResolution(resolution) {
