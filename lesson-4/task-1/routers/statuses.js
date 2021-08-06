@@ -4,7 +4,7 @@ const STATUSES = {
     BadRequest: 400,
     NotFound: 404,
     ServerError: 500,
-    Unavaible: 503,
+    Unavailable: 503,
 };
 
 module.exports = STATUSES;
