@@ -1,4 +1,4 @@
-export default class ResolutionList {
+class ResolutionList {
     constructor() {
         this.resolutionList = {};
         this.currentResolution = null;
@@ -37,3 +37,6 @@ export default class ResolutionList {
         delete this.resolutionList[key];
     }
 }
+
+const resolutionList = new ResolutionList();
+export default resolutionList;

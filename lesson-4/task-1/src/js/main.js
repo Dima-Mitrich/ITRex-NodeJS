@@ -1,10 +1,3 @@
-import PatientList from './PatientList.js';
-import Patient from './Patient.js';
-import Resolution from './Resolution.js';
-import ResolutionList from './ResolutionList.js';
-
-const queue = new PatientList();
-const resolutionList = new ResolutionList();
 let currentPatient = null;
 
 // находим все кнопки
@@ -42,19 +35,33 @@ searchResolutionDoctorInput.addEventListener('input', addButtonStatusChange(show
 document.addEventListener('keydown', findResolutionForPatient);
 
 // интерфейс пациента
-function addNewPatient() {
-    const patientName = newPatinetNameInput.value;
+async function addNewPatient() {
+    const response = await fetch('/queue/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: newPatinetNameInput.value,
+    });
 
-    const newPatinet = new Patient(patientName);
-    queue.addPatient(newPatinet);
+    const text = await response.text();
+    console.log(text);
+
     nextPatientButton.disabled = false;
     dischargeInput(newPatinetNameInput, addNewPatientButton);
 }
 
-function findResolutionForPatient(event) {
+async function findResolutionForPatient(event) {
     if (searchResolutionPatientInput.value && event.keyCode === 13) {
         const patientName = searchResolutionPatientInput.value;
-        const foundResolution = resolutionList.findResolution(patientName, false);
+
+        const response = await fetch(`/queue/getResolution/${patientName}`, {
+            method: 'GET',
+            headers: {
+                isDoctor: false,
+            },
+        });
+        const foundResolution = await response.text();
 
         if (!foundResolution) {
             patientFieldWithFoundedResolution.innerHTML = 'there is no such resolution, or timeout';
@@ -65,18 +72,22 @@ function findResolutionForPatient(event) {
 }
 
 // интерфейс доктора
-function callNextPatient() {
-    currentPatient = queue.takePatient();
+async function callNextPatient() {
+    const response = await fetch('/doctor/next');
+
+    const { patient, isEmpty } = await response.json();
+
+    currentPatient = patient;
 
     queueListDoctorInterface.innerHTML = currentPatient.name;
     queueListUserInterface.innerHTML = currentPatient.name;
 
-    if (queue.isEmpty()) {
+    if (isEmpty) {
         nextPatientButton.disabled = true;
     }
 }
 
-function addNewResolutionForCurrentPatient() {
+async function addNewResolutionForCurrentPatient() {
     if (!currentPatient) {
         alert('You dont have patient at the time');
         dischargeInput(newResolutionInput, addNewResolutionButton);
@@ -84,19 +95,33 @@ function addNewResolutionForCurrentPatient() {
         return;
     }
 
-    const newResolution = new Resolution(newResolutionInput.value, currentPatient);
+    const newResolutionContent = newResolutionInput.value;
+    const ttl = addResolutionWithTTLCheckbox.checked;
 
-    currentPatient.addResolution(newResolution);
+    const response = await fetch('/doctor/addResolution', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+        },
+        body: JSON.stringify({ newResolutionContent, currentPatient, ttl }),
+    });
 
-    if (addResolutionWithTTLCheckbox.checked) resolutionList.addNewResolution(newResolution, true);
-    else resolutionList.addNewResolution(newResolution);
+    const text = await response.text();
+    console.log(text);
 
     dischargeInput(newResolutionInput, addNewResolutionButton);
 }
 
-function findResolutionForDoctor() {
+async function findResolutionForDoctor() {
     const patientName = searchResolutionDoctorInput.value;
-    const foundResolution = resolutionList.findResolution(patientName, true);
+
+    const response = await fetch(`/doctor/resolution/${patientName}`, {
+        method: 'GET',
+        headers: {
+            isDoctor: true,
+        },
+    });
+    const foundResolution = await response.text();
 
     if (!foundResolution) {
         doctorFieldWithFoundedResolution.innerHTML = 'There is no such patient';
@@ -107,8 +132,14 @@ function findResolutionForDoctor() {
     deleteResolutionButton.disabled = false;
 }
 
-function deleteResolution() {
-    resolutionList.deleteResolution(currentPatient.name);
+async function deleteResolution() {
+    // resolutionList.deleteResolution(currentPatient.name);
+
+    const response = await fetch(`doctor/deleteResolution/${searchResolutionDoctorInput.value}`, {
+        method: 'DELETE',
+    });
+    const res = await response.text();
+    console.log(res);
 
     dischargeInput(doctorFieldWithFoundedResolution, deleteResolutionButton);
     dischargeInput(searchResolutionDoctorInput, showResolutionToDoctorButton);

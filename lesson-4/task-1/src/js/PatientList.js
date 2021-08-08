@@ -1,25 +1,27 @@
-export default class PatientList {
+class PatientList {
     constructor() {
         this.queue = [];
     }
 
-    addPatient(obj) {
-        this.queue.push(obj);
+    async addPatient(obj) {
+        await this.queue.push(obj);
     }
 
-    takePatient() {
-        return this.queue.shift();
+    async takePatient() {
+        const patient = await this.queue.shift();
+        return patient;
     }
 
-    isEmpty() {
-        return this.queue.length === 0;
+    async isEmpty() {
+        const result = await this.queue.length === 0;
+        return result;
     }
 
-    size() {
-        return this.queue.length;
-    }
-
-    clear() {
-        this.queue.length = 0;
+    async size() {
+        const size = await this.queue.length;
+        return size;
     }
 }
+
+const queue = new PatientList();
+export default queue;
