@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
-import docRouter from './routers/docRouter.js';
-import queueRouter from './routers/queueRouter.js';
+import docRouter from './src/routes/docRouter.js';
+import queueRouter from './src/routes/queueRouter.js';
 
 const __dirname = path.resolve();
 const app = express();

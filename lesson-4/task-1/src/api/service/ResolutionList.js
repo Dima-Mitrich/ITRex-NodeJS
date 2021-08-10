@@ -4,17 +4,17 @@ class ResolutionList {
         this.currentResolution = null;
     }
 
-    addNewResolution(resolution, ttl = false) {
+    async addNewResolution(resolution, ttl = false) {
         const patientName = resolution.patient.name;
 
-        if (!(patientName in this.resolutionList)) {
-            this.resolutionList[patientName] = resolution;
-        } else {
+        if (await this.isExist(patientName)) {
             this.resolutionList[patientName].content += ` | ${resolution.content}`;
+        } else {
+            this.resolutionList[patientName] = resolution;
         }
 
         if (ttl) {
-            setTimeout(() => this.deleteResolution(patientName), 10000);
+            setTimeout(async () => { await this.deleteResolution(patientName); }, 10000);
         }
     }
 
@@ -33,8 +33,13 @@ class ResolutionList {
         }
     }
 
-    deleteResolution(key) {
-        delete this.resolutionList[key];
+    async deleteResolution(key) {
+        await delete this.resolutionList[key];
+    }
+
+    async isExist(name) {
+        const res = await name in this.resolutionList;
+        return res;
     }
 }
 

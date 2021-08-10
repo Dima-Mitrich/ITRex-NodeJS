@@ -1,5 +1,5 @@
-import queue from '../src/js/PatientList.js';
-import Patient from '../src/js/Patient.js';
+import queue from '../service/PatientList.js';
+import Patient from '../service/Patient.js';
 
 export async function addInQueue(req, res) {
     const patientName = req.body;
