@@ -32,17 +32,17 @@ async function findResolutionForPatient(event) {
     if (searchResolutionPatientInput.value && event.keyCode === 13) {
         const patientName = searchResolutionPatientInput.value;
 
-        const response = await fetch(`/queue/getResolution/${patientName}`, {
+        const response = await fetch(`/queue/resolution/${patientName}`, {
             method: 'GET',
             headers: {
                 isDoctor: false,
             },
         });
-        const foundResolution = await response.text();
 
-        if (!foundResolution) {
+        if (response.status !== 200) {
             patientFieldWithFoundedResolution.innerHTML = 'there is no such resolution, or timeout';
         } else {
+            const foundResolution = await response.text();
             patientFieldWithFoundedResolution.innerHTML = foundResolution;
         }
     }

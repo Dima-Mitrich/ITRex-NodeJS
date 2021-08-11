@@ -49,7 +49,7 @@ async function addNewResolutionForCurrentPatient() {
     const newResolutionContent = newResolutionInput.value;
     const ttl = addResolutionWithTTLCheckbox.checked;
 
-    const response = await fetch('/doctor/addResolution', {
+    const response = await fetch('/doctor/new-resolution', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -72,11 +72,11 @@ async function findResolutionForDoctor() {
             isDoctor: true,
         },
     });
-    const foundResolution = await response.text();
 
-    if (!foundResolution) {
+    if (response.status !== 200) {
         doctorFieldWithFoundedResolution.innerHTML = 'There is no such patient';
     } else {
+        const foundResolution = await response.text();
         doctorFieldWithFoundedResolution.innerHTML = foundResolution;
     }
 
@@ -84,12 +84,16 @@ async function findResolutionForDoctor() {
 }
 
 async function deleteResolution() {
-    const response = await fetch(`doctor/deleteResolution/${searchResolutionDoctorInput.value}`, {
-        method: 'DELETE',
-    });
-    const res = await response.text();
-    console.log(res);
+    const resolutionContent = doctorFieldWithFoundedResolution.innerHTML;
 
-    dischargeInput(doctorFieldWithFoundedResolution, deleteResolutionButton);
-    dischargeInput(searchResolutionDoctorInput, showResolutionToDoctorButton);
+    if (resolutionContent && resolutionContent !== 'There is no such patient') {
+        const response = await fetch(`doctor/resolution/${searchResolutionDoctorInput.value}`, {
+            method: 'DELETE',
+        });
+        const res = await response.text();
+        console.log(res);
+
+        dischargeInput(doctorFieldWithFoundedResolution, deleteResolutionButton);
+        dischargeInput(searchResolutionDoctorInput, showResolutionToDoctorButton);
+    }
 }

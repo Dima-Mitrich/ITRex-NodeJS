@@ -1,36 +1,30 @@
-import resolutionList from '../service/ResolutionList.js';
-import Resolution from '../service/Resolution.js';
+import resolutionListService from '../service/ResolutionListService.js';
+import handleError from '../helpers/handleError.js';
+import { STATUSES } from '../../constants.js';
 
-export function addResolution(newResolutionContent, currentPatient, ttl) {
-    const resolution = new Resolution(newResolutionContent, currentPatient);
+class ResolutionController {
+    constructor(resolutionListService) {
+        this.resolutionListService = resolutionListService;
+    }
 
-    try {
-        (async () => {
-            await resolutionList.addNewResolution(resolution, ttl);
-        })();
+    async addResolution(newResolutionContent, currentPatient, ttl) {
+        const result = await this.resolutionListService.addNewResolution(newResolutionContent, currentPatient, ttl);
 
-        return true;
-    } catch (err) {
-        console.log(err);
+        return handleError(result, STATUSES.ServerError, STATUSES.OK);
+    }
 
-        return false;
+    async deleteResolution(name) {
+        const result = await this.resolutionListService.deleteResolution(name);
+
+        return handleError(result, STATUSES.NotFound, STATUSES.OK);
+    }
+
+    async findResolution(name, isDoctor) {
+        const result = await this.resolutionListService.findResolution(name, isDoctor);
+
+        return handleError(result, STATUSES.NotFound, STATUSES.OK);
     }
 }
 
-export function deleteResolution(name) {
-    try {
-        (async () => { await resolutionList.deleteResolution(name); })();
-
-        return true;
-    } catch (err) {
-        console.log(err);
-
-        return false;
-    }
-}
-
-export function findResolution(name, isDoctor) {
-    const result = resolutionList.findResolution(name, isDoctor);
-
-    return result;
-}
+const resolutionController = new ResolutionController(resolutionListService);
+export default resolutionController;

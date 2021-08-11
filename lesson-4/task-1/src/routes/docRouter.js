@@ -1,56 +1,56 @@
 import express from 'express';
-import * as queue from '../api/controllers/queueController.js';
-import * as resolution from '../api/controllers/resolutionController.js';
+import queueController from '../api/controllers/queueController.js';
+import resolutionController from '../api/controllers/resolutionController.js';
 import { validateNewResolution, validateNameParams } from '../api/helpers/validate.js';
+import { STATUSES } from '../constants.js';
 
 const docRouter = express.Router();
 
-docRouter.use('/addResolution', express.json());
+docRouter.get('/next', async (req, res) => {
+    const result = await queueController.getPatient();
 
-docRouter.get('/next', queue.getPatient);
+    const { patient, isEmpty } = result.value;
 
-docRouter.post('/addResolution', (req, res) => {
-    if (validateNewResolution(req.body)) {
-        const { newResolutionContent, currentPatient, ttl } = req.body;
-
-        const result = resolution.addResolution(newResolutionContent, currentPatient, ttl);
-
-        if (result) {
-            res.status(200).send('resolution was succefully added');
-        } else {
-            res.status(500).send('sorry, cant add resolution at the moment');
-        }
-    } else {
-        res.status(400).send(validateNewResolution.errors);
-    }
+    res.status(result.status).send(JSON.stringify({ patient, isEmpty }));
 });
 
-docRouter.delete('/deleteResolution/:name', (req, res) => {
-    if (validateNameParams(req.params.name)) {
-        const result = resolution.deleteResolution(req.params.name);
+docRouter.use('/new-resolution', express.json());
 
-        if (result) {
-            res.status(200).send('resolution was succefully deleted');
-        } else {
-            res.status(500).send('sorry, cant delete resolution at the moment');
-        }
-    } else {
-        res.status(400).send(validateNameParams.errors);
-    }
+docRouter.post('/new-resolution', (req, res, next) => {
+    validateNewResolution(req.body)
+
+        ? next()
+
+        : res.status(STATUSES.BadRequest).send(validateNewResolution.errors);
+}, async (req, res) => {
+    const { newResolutionContent, currentPatient, ttl } = req.body;
+    const result = await resolutionController.addResolution(newResolutionContent, currentPatient, ttl);
+
+    res.status(result.status).send(result.value);
 });
 
-docRouter.get('/resolution/:name', (req, res) => {
-    if (validateNameParams(req.params.name)) {
-        const result = resolution.findResolution(req.params.name, req.headers.isdoctor);
+docRouter.delete('/resolution/:name', (req, res, next) => {
+    validateNameParams(req.params.name)
 
-        if (result) {
-            res.status(200).send(result);
-        } else {
-            res.status(404).send('sorry, cant delete resolution at the moment');
-        }
-    } else {
-        res.status(400).send(validateNameParams.errors);
-    }
+        ? next()
+
+        : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
+}, async (req, res) => {
+    const result = await resolutionController.deleteResolution(req.params.name);
+
+    res.status(result.status).send(result.value);
+});
+
+docRouter.get('/resolution/:name', (req, res, next) => {
+    validateNameParams(req.params.name)
+
+        ? next()
+
+        : res.status(400).send(validateNameParams.errors);
+}, async (req, res) => {
+    const result = await resolutionController.findResolution(req.params.name, req.headers.isdoctor);
+
+    res.status(result.status).send(result.value);
 });
 
 export default docRouter;

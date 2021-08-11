@@ -1,4 +1,5 @@
 import Ajv from 'ajv';
+import { MAX_LENGTH, MIN_LENGTH } from '../../constants.js';
 
 const ajv = new Ajv();
 
@@ -14,7 +15,7 @@ const addResolutionSchema = {
 };
 
 const nameSchema = {
-    type: 'string', maxLength: 20,
+    type: 'string', maxLength: MAX_LENGTH, minLength: MIN_LENGTH,
 };
 
 export const validateNewResolution = ajv.compile(addResolutionSchema);

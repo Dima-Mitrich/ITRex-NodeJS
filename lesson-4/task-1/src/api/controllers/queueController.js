@@ -1,21 +1,29 @@
-import queue from '../service/PatientList.js';
-import Patient from '../service/Patient.js';
+import queueService from '../service/PatientListService.js';
+import handleError from '../helpers/handleError.js';
+import { STATUSES } from '../../constants.js';
 
-export async function addInQueue(req, res) {
-    const patientName = req.body;
-    const patient = new Patient(patientName);
+class QueueController {
+    constructor(queueService) {
+        this.queueService = queueService;
+    }
 
-    await queue.addPatient(patient);
-    res.send(true);
+    async addInQueue(name) {
+        const result = await this.queueService.addPatient(name);
+
+        return handleError(result, STATUSES.ServerError, STATUSES.OK);
+    }
+
+    async getPatient() {
+        const patient = await queueService.takePatient();
+        const isEmpty = await this.getLength();
+
+        return handleError({ patient, isEmpty }, STATUSES.ServerError, STATUSES.OK);
+    }
+
+    async getLength() {
+        return this.queueService.isEmpty();
+    }
 }
 
-export async function getPatient(req, res) {
-    const patient = await queue.takePatient();
-    const isEmpty = await getLength();
-
-    res.send(JSON.stringify({ patient, isEmpty }));
-}
-
-export async function getLength() {
-    return queue.isEmpty();
-}
+const queueController = new QueueController(queueService);
+export default queueController;
