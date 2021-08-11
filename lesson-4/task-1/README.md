@@ -22,3 +22,17 @@ DELETE : http://localhost:3000/doctor/resolution/:name - удалить резо
 POST : http://localhost:3000/queue/add - добавить нового пациента;
 
 GET : http://localhost:3000/queue/resolution/:name - найти резолюцию от имени пациента;
+
+
+## Ссылка на docker-hub репозиторий с изображением приложения; https://hub.docker.com/repository/docker/dima95/node-web-app
+
+Чтобы запустить докер убедитесь что он установлен на Вашем компьютере, затем потяните изображение из реопзитория 
+с помощью команды :
+```
+docker pull dima95/node-web-app:latest
+```
+а потом создайте контейнер из изображения и запустите его с помощью команды :
+```
+docker run -p 3000:3000 -d dima95/node-web-app  
+```
+Приложение будет запущенно по адресу: http://localhost:3000/
