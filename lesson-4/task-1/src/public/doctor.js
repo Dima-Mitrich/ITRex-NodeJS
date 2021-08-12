@@ -1,6 +1,7 @@
 import { dischargeInput, addButtonStatusChange } from './common.js';
 
 let currentPatient = null;
+let foundedPatient = null;
 
 const nextPatientButton = document.getElementById('nextButton');
 const addNewResolutionButton = document.getElementById('addNewResolutionButton');
@@ -76,8 +77,9 @@ async function findResolutionForDoctor() {
     if (response.status !== 200) {
         doctorFieldWithFoundedResolution.innerHTML = 'There is no such patient';
     } else {
-        const foundResolution = await response.text();
-        doctorFieldWithFoundedResolution.innerHTML = foundResolution;
+        const foundResolution = await response.json();
+        doctorFieldWithFoundedResolution.innerHTML = foundResolution.content;
+        foundedPatient = foundResolution.patient;
     }
 
     deleteResolutionButton.disabled = false;
@@ -87,7 +89,7 @@ async function deleteResolution() {
     const resolutionContent = doctorFieldWithFoundedResolution.innerHTML;
 
     if (resolutionContent && resolutionContent !== 'There is no such patient') {
-        const response = await fetch(`doctor/resolution/${searchResolutionDoctorInput.value}`, {
+        const response = await fetch(`doctor/resolution/${foundedPatient.name}`, {
             method: 'DELETE',
         });
         const res = await response.text();

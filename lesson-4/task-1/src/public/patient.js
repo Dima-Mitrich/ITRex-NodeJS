@@ -42,8 +42,8 @@ async function findResolutionForPatient(event) {
         if (response.status !== 200) {
             patientFieldWithFoundedResolution.innerHTML = 'there is no such resolution, or timeout';
         } else {
-            const foundResolution = await response.text();
-            patientFieldWithFoundedResolution.innerHTML = foundResolution;
+            const foundResolution = await response.json();
+            patientFieldWithFoundedResolution.innerHTML = foundResolution.content;
         }
     }
 }

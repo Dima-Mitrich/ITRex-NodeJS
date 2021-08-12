@@ -46,11 +46,11 @@ docRouter.get('/resolution/:name', (req, res, next) => {
 
         ? next()
 
-        : res.status(400).send(validateNameParams.errors);
+        : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
 }, async (req, res) => {
     const result = await resolutionController.findResolution(req.params.name, req.headers.isdoctor);
 
-    res.status(result.status).send(result.value);
+    res.status(result.status).send(JSON.stringify(result.value));
 });
 
 export default docRouter;

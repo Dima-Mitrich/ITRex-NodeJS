@@ -38,9 +38,9 @@ class ResolutionList {
         if (isFromDoctor) {
             this.currentResolution = result;
 
-            return this.currentResolution.content;
+            return this.currentResolution;
         } else {
-            return result.content;
+            return result;
         }
     }
 
