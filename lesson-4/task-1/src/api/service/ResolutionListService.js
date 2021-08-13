@@ -1,5 +1,6 @@
 import resolutionStorage from '../database/resolution-storage.js';
 import Resolution from './Resolution.js';
+import { TTL_MILSEC } from '../../constants.js';
 
 class ResolutionList {
     constructor() {
@@ -19,7 +20,7 @@ class ResolutionList {
             }
 
             if (ttl) {
-                setTimeout(async () => { await this.deleteResolution(patientName); }, 10000);
+                setTimeout(async () => { await this.deleteResolution(patientName); }, TTL_MILSEC);
             }
 
             return resolution;

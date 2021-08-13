@@ -10,7 +10,7 @@ class QueueController {
     async addInQueue(name) {
         const result = await this.queueService.addPatient(name);
 
-        return handleError(result, STATUSES.ServerError, STATUSES.OK);
+        return handleError(result, STATUSES.ServerError, STATUSES.Created);
     }
 
     async getPatient() {

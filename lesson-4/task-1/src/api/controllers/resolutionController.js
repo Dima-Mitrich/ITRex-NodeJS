@@ -10,7 +10,7 @@ class ResolutionController {
     async addResolution(newResolutionContent, currentPatient, ttl) {
         const result = await this.resolutionListService.addNewResolution(newResolutionContent, currentPatient, ttl);
 
-        return handleError(result, STATUSES.ServerError, STATUSES.OK);
+        return handleError(result, STATUSES.ServerError, STATUSES.Created);
     }
 
     async deleteResolution(name) {
