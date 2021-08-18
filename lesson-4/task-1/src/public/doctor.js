@@ -50,7 +50,7 @@ async function addNewResolutionForCurrentPatient() {
     const newResolutionContent = newResolutionInput.value;
     const ttl = addResolutionWithTTLCheckbox.checked;
 
-    const response = await fetch('/doctor/new-resolution', {
+    const response = await fetch('/doctor/resolution', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -67,7 +67,7 @@ async function addNewResolutionForCurrentPatient() {
 async function findResolutionForDoctor() {
     const patientName = searchResolutionDoctorInput.value;
 
-    const response = await fetch(`/doctor/resolution/${patientName}`, {
+    const response = await fetch(`resolution/${patientName}`, {
         method: 'GET',
         headers: {
             isDoctor: true,

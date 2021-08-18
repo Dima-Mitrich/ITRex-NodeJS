@@ -14,9 +14,9 @@ docRouter.get('/next', async (req, res) => {
     res.status(result.status).send(JSON.stringify({ patient, isEmpty }));
 });
 
-docRouter.use('/new-resolution', express.json());
+docRouter.use('/resolution', express.json());
 
-docRouter.post('/new-resolution', (req, res, next) => {
+docRouter.post('/resolution', (req, res, next) => {
     validateNewResolution(req.body)
 
         ? next()
@@ -36,21 +36,9 @@ docRouter.delete('/resolution/:name', (req, res, next) => {
 
         : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
 }, async (req, res) => {
-    const result = await resolutionController.deleteResolution(req.params.name);
+    const result = await resolutionController.deleteResolution();
 
     res.status(result.status).send(result.value);
-});
-
-docRouter.get('/resolution/:name', (req, res, next) => {
-    validateNameParams(req.params.name)
-
-        ? next()
-
-        : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
-}, async (req, res) => {
-    const result = await resolutionController.findResolution(req.params.name, req.headers.isdoctor);
-
-    res.status(result.status).send(JSON.stringify(result.value));
 });
 
 export default docRouter;

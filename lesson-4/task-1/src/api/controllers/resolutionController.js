@@ -1,4 +1,4 @@
-import resolutionListService from '../service/ResolutionListService.js';
+import resolutionListService from '../service/resolution-storage-service/ResolutionServiceFactory.js';
 import handleError from '../helpers/handleError.js';
 import { STATUSES } from '../../constants.js';
 
@@ -13,8 +13,8 @@ class ResolutionController {
         return handleError(result, STATUSES.ServerError, STATUSES.Created);
     }
 
-    async deleteResolution(name) {
-        const result = await this.resolutionListService.deleteResolution(name);
+    async deleteResolution() {
+        const result = await this.resolutionListService.deleteResolution();
 
         return handleError(result, STATUSES.NotFound, STATUSES.OK);
     }

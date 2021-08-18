@@ -31,7 +31,7 @@ async function findResolutionForPatient(event) {
     if (searchResolutionPatientInput.value && event.keyCode === 13) {
         const patientName = searchResolutionPatientInput.value;
 
-        const response = await fetch(`/queue/resolution/${patientName}`, {
+        const response = await fetch(`resolution/${patientName}`, {
             method: 'GET',
             headers: {
                 isDoctor: false,

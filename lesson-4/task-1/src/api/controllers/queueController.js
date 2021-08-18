@@ -1,4 +1,4 @@
-import queueService from '../service/PatientListService.js';
+import queueService from '../service/patient-storage-service/PatientServiceFactory.js';
 import handleError from '../helpers/handleError.js';
 import { STATUSES } from '../../constants.js';
 
@@ -15,12 +15,12 @@ class QueueController {
 
     async getPatient() {
         const patient = await queueService.takePatient();
-        const isEmpty = await this.getLength();
+        const isEmpty = await this.isEmpty();
 
         return handleError({ patient, isEmpty }, STATUSES.ServerError, STATUSES.OK);
     }
 
-    async getLength() {
+    async isEmpty() {
         return this.queueService.isEmpty();
     }
 }

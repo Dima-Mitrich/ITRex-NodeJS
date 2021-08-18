@@ -1,7 +1,7 @@
-import patientStorage from '../database/patient-storage.js';
-import Patient from './Patient.js';
+import patientStorage from '../../database/patient-storage.js';
+import Patient from '../../interface/Patient.js';
 
-class PatientListService {
+export default class InMemoryPatientStorageService {
     constructor() {
         this.queue = patientStorage;
     }
@@ -50,6 +50,3 @@ class PatientListService {
         }
     }
 }
-
-const queueService = new PatientListService();
-export default queueService;

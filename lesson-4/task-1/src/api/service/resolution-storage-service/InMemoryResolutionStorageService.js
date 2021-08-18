@@ -1,8 +1,8 @@
-import resolutionStorage from '../database/resolution-storage.js';
-import Resolution from './Resolution.js';
-import { TTL_MILSEC } from '../../constants.js';
+import resolutionStorage from '../../database/resolution-storage.js';
+import Resolution from '../../interface/Resolution.js';
+import { TTL_MILSEC } from '../../../constants.js';
 
-class ResolutionList {
+export default class InMemoryResolutionStorageService {
     constructor() {
         this.resolutionList = resolutionStorage;
         this.currentResolution = null;
@@ -38,22 +38,16 @@ class ResolutionList {
 
         if (isFromDoctor) {
             this.currentResolution = result;
-
-            return this.currentResolution;
-        } else {
-            return result;
         }
+
+        return JSON.stringify(result);
     }
 
-    async deleteResolution(key) {
+    async deleteResolution(key = this.currentResolution.patient.name) {
         try {
-            if (await this.isExist(key)) {
-                await delete this.resolutionList[key];
+            await delete this.resolutionList[key];
 
-                return 'succes';
-            } else {
-                throw new Error('not found');
-            }
+            return 'succes';
         } catch (err) {
             console.log(err);
 
@@ -67,6 +61,3 @@ class ResolutionList {
         return res;
     }
 }
-
-const resolutionListService = new ResolutionList();
-export default resolutionListService;
