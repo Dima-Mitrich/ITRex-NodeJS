@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const env = process.env.NODE_ENV; // 'dev' or 'test'
-const storageType = process.env.STORAGE_TYPE;
+const storageType = process.env.STORAGE_TYPE; // 'redis' or 'inMemory'
 
 const dev = {
     app: {

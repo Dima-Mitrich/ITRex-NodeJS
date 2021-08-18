@@ -30,15 +30,49 @@ POST : http://localhost:3000/queue/add - добавить нового паци�
 GET : http://localhost:3000/queue/resolution/:name - найти резолюцию от имени пациента;
 
 
-## Ссылка на docker-hub репозиторий с изображением приложения: https://hub.docker.com/repository/docker/dima95/node-web-app
+## Ссылка на docker-hub репозиторий с изображением приложения: https://hub.docker.com/repository/docker/dima95/itrex-laba-project
 
 Чтобы запустить докер убедитесь что он установлен на Вашем компьютере, затем потяните изображение из репозитория 
 с помощью команды :
 ```
-docker pull dima95/node-web-app:latest
+docker pull dima95/itrex-laba-project:latest
 ```
 а потом создайте контейнер из изображения и запустите его с помощью команды :
 ```
-docker run -p 3000:3000 -d dima95/node-web-app
+docker run -p 3000:3000 -d dima95/itrex-laba-project
 ```
 Приложение будет запущенно по адресу: http://localhost:3000/
+
+## Тесты
+
+Для запуска тестов введите в консоль команду:
+```
+npm test --runInBand
+```
+
+## Типы хранилища
+
+Для смены типа хранилища поменяйте в файле config.js с
+```
+app: {
+        port: parseInt(process.env.DEV_APP_PORT, 10) || 3000,
+        TTL_MILSEC: 10000,
+        storageType,
+    },
+```
+на 
+```
+app: {
+        port: parseInt(process.env.DEV_APP_PORT, 10) || 3000,
+        TTL_MILSEC: 10000,
+        storageType: 'redis',
+    },
+```
+или на
+```
+app: {
+        port: parseInt(process.env.DEV_APP_PORT, 10) || 3000,
+        TTL_MILSEC: 10000,
+        storageType:'inMemory',
+    },
+```
