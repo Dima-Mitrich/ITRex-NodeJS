@@ -25,16 +25,16 @@ newResolutionInput.addEventListener('input', addButtonStatusChange(addNewResolut
 searchResolutionDoctorInput.addEventListener('input', addButtonStatusChange(showResolutionToDoctorButton));
 
 async function callNextPatient() {
-    const response = await fetch('/doctor/next');
+    const response = await fetch('/patients/next');
 
-    const { patient, isEmpty } = await response.json();
+    const patient = await response.json();
 
     currentPatient = patient;
 
     queueListDoctorInterface.innerHTML = currentPatient.name;
     queueListUserInterface.innerHTML = currentPatient.name;
 
-    if (isEmpty) {
+    if (patient.last) {
         nextPatientButton.disabled = true;
     }
 }
@@ -50,7 +50,7 @@ async function addNewResolutionForCurrentPatient() {
     const newResolutionContent = newResolutionInput.value;
     const ttl = addResolutionWithTTLCheckbox.checked;
 
-    const response = await fetch('/doctor/resolution', {
+    const response = await fetch('/resolutions/new', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -67,7 +67,7 @@ async function addNewResolutionForCurrentPatient() {
 async function findResolutionForDoctor() {
     const patientName = searchResolutionDoctorInput.value;
 
-    const response = await fetch(`resolution/${patientName}`, {
+    const response = await fetch(`resolutions/${patientName}`, {
         method: 'GET',
         headers: {
             isDoctor: true,
@@ -89,7 +89,7 @@ async function deleteResolution() {
     const resolutionContent = doctorFieldWithFoundedResolution.innerHTML;
 
     if (resolutionContent && resolutionContent !== 'There is no such patient') {
-        const response = await fetch(`doctor/resolution/${foundedPatient.name}`, {
+        const response = await fetch(`resolutions/${foundedPatient.name}`, {
             method: 'DELETE',
         });
         const res = await response.text();

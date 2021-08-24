@@ -12,6 +12,12 @@ export const REDIS_STORAGE_NAME = 'redis';
 
 export const IN_MEMORY_STORAGE_NAME = 'inMemory';
 
+export const MY_SQL_STORAGE_NAME = 'mySQL';
+
+export const SUCCESS_MESSAGE = 'success';
+
+export const NOT_FOUND_MESSAGE = 'not found';
+
 export const STATUSES = {
     OK: 200,
     Created: 201,

@@ -13,7 +13,7 @@ const patientFieldWithFoundedResolution = document.getElementById('foundResoluti
 document.addEventListener('keydown', findResolutionForPatient);
 
 async function addNewPatient() {
-    const response = await fetch(`/queue/add/${newPatinetNameInput.value}`, {
+    const response = await fetch(`/patients/add/${newPatinetNameInput.value}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'text/plain;charset=utf-8',
@@ -31,7 +31,7 @@ async function findResolutionForPatient(event) {
     if (searchResolutionPatientInput.value && event.keyCode === 13) {
         const patientName = searchResolutionPatientInput.value;
 
-        const response = await fetch(`resolution/${patientName}`, {
+        const response = await fetch(`resolutions/${patientName}`, {
             method: 'GET',
             headers: {
                 isDoctor: false,

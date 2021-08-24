@@ -1,4 +1,4 @@
-import queueService from '../service/patient-storage-service/PatientServiceFactory.js';
+import patientStorageService from '../service/PatientStorageService.js';
 import handleError from '../helpers/handleError.js';
 import { STATUSES } from '../../constants.js';
 
@@ -10,14 +10,17 @@ class QueueController {
     async addInQueue(name) {
         const result = await this.queueService.addPatient(name);
 
-        return handleError(result, STATUSES.ServerError, STATUSES.Created);
+        return handleError(result, STATUSES.Created);
     }
 
     async getPatient() {
-        const patient = await queueService.takePatient();
-        const isEmpty = await this.isEmpty();
+        const patient = await this.queueService.takePatient();
 
-        return handleError({ patient, isEmpty }, STATUSES.ServerError, STATUSES.OK);
+        if (patient.name) {
+            patient.last = await this.isEmpty();
+        }
+
+        return handleError(patient, STATUSES.OK);
     }
 
     async isEmpty() {
@@ -25,5 +28,5 @@ class QueueController {
     }
 }
 
-const queueController = new QueueController(queueService);
+const queueController = new QueueController(patientStorageService);
 export default queueController;

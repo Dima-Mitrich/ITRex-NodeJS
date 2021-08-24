@@ -1,22 +1,13 @@
 import express from 'express';
-import queueController from '../api/controllers/queueController.js';
+import { STATUSES } from '../constants.js';
 import resolutionController from '../api/controllers/resolutionController.js';
 import { validateNewResolution, validateNameParams } from '../api/helpers/validate.js';
-import { STATUSES } from '../constants.js';
 
-const docRouter = express.Router();
+const resolutionRouter = express.Router();
 
-docRouter.get('/next', async (req, res) => {
-    const result = await queueController.getPatient();
+resolutionRouter.use('/new', express.json());
 
-    const { patient, isEmpty } = result.value;
-
-    res.status(result.status).send(JSON.stringify({ patient, isEmpty }));
-});
-
-docRouter.use('/resolution', express.json());
-
-docRouter.post('/resolution', (req, res, next) => {
+resolutionRouter.post('/new', (req, res, next) => {
     validateNewResolution(req.body)
 
         ? next()
@@ -29,7 +20,7 @@ docRouter.post('/resolution', (req, res, next) => {
     res.status(result.status).send(result.value);
 });
 
-docRouter.delete('/resolution/:name', (req, res, next) => {
+resolutionRouter.delete('/:name', (req, res, next) => {
     validateNameParams(req.params.name)
 
         ? next()
@@ -41,4 +32,16 @@ docRouter.delete('/resolution/:name', (req, res, next) => {
     res.status(result.status).send(result.value);
 });
 
-export default docRouter;
+resolutionRouter.get('/:name', (req, res, next) => {
+    validateNameParams(req.params.name)
+
+        ? next()
+
+        : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
+}, async (req, res) => {
+    const result = await resolutionController.findResolution(req.params.name, req.headers.isdoctor);
+
+    res.status(result.status).send(result.value);
+});
+
+export default resolutionRouter;
