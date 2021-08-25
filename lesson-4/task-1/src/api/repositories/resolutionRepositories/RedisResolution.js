@@ -1,5 +1,5 @@
 import { promisify } from 'util';
-import { TTL_MILSEC, NOT_FOUND_MESSAGE, SUCCESS_MESSAGE } from '../../constants.js';
+import { TTL_MILSEC, NOT_FOUND_MESSAGE, SUCCESS_MESSAGE } from '../../../constants.js';
 
 export default class RedisResolution {
     constructor(resolutionStorage) {
@@ -7,23 +7,23 @@ export default class RedisResolution {
     }
 
     async push(resolution, ttl = false) {
-        const patientName = resolution.patient.name;
+        const { patientID } = resolution;
 
         const addNewResolution = promisify(this.resolutionStorage.set).bind(this.resolutionStorage);
         const getResolution = promisify(this.resolutionStorage.get).bind(this.resolutionStorage);
 
         try {
-            if (await this.isExist(patientName)) {
-                const oldResolution = JSON.parse(await getResolution(patientName)); // transactions
+            if (await this.isExist(patientID)) {
+                const oldResolution = JSON.parse(await getResolution(patientID)); // transactions
                 oldResolution.content += ` | ${resolution.content}`;
 
                 ttl
-                    ? await addNewResolution(patientName, JSON.stringify(oldResolution), 'PX', TTL_MILSEC)
-                    : await addNewResolution(patientName, JSON.stringify(oldResolution));
+                    ? await addNewResolution(patientID, JSON.stringify(oldResolution), 'PX', TTL_MILSEC)
+                    : await addNewResolution(patientID, JSON.stringify(oldResolution));
             } else {
                 ttl
-                    ? await addNewResolution(patientName, JSON.stringify(resolution), 'PX', TTL_MILSEC)
-                    : await addNewResolution(patientName, JSON.stringify(resolution));
+                    ? await addNewResolution(patientID, JSON.stringify(resolution), 'PX', TTL_MILSEC)
+                    : await addNewResolution(patientID, JSON.stringify(resolution));
             }
 
             return SUCCESS_MESSAGE;
@@ -34,28 +34,28 @@ export default class RedisResolution {
         }
     }
 
-    async findResolution(name) {
+    async findResolution(patientID) {
         const findResolution = promisify(this.resolutionStorage.get).bind(this.resolutionStorage);
 
-        const result = await findResolution(name);
+        const result = await findResolution(patientID);
 
         if (!result) {
             throw new Error(NOT_FOUND_MESSAGE);
         } else {
-            return result;
+            return JSON.parse(result);
         }
     }
 
-    async deleteResolution(name) {
+    async deleteResolution(patientID) {
         const deleteResolution = promisify(this.resolutionStorage.del).bind(this.resolutionStorage);
-        await deleteResolution(name);
+        await deleteResolution(patientID);
 
         return SUCCESS_MESSAGE;
     }
 
-    async isExist(name) {
+    async isExist(id) {
         const isExist = promisify(this.resolutionStorage.EXISTS).bind(this.resolutionStorage);
-        const result = await isExist(name);
+        const result = await isExist(id);
 
         return result;
     }

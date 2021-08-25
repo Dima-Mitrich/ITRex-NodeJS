@@ -1,5 +1,5 @@
 /* eslint-disable */
-import patientStorageService from '../api/service/PatientStorageService.js';
+import patientStorageService from '../api/service/QueueService.js';
 import resolutionStorageService from '../api/service/ResolutionStorageService.js';
 import config from '../../config.js';
 import { REDIS_STORAGE_NAME, STATUSES } from '../constants.js';

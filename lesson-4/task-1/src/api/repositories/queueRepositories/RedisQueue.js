@@ -1,24 +1,24 @@
 import { promisify } from 'util';
-import { REDIS_QUEUE_NAME } from '../../constants.js';
+import { REDIS_QUEUE_NAME } from '../../../constants.js';
 
-export default class RedisPatient {
-    constructor(patientStorage) {
-        this.queue = patientStorage;
+export default class RedisQueue {
+    constructor(queue) {
+        this.queue = queue;
         this.redisListName = REDIS_QUEUE_NAME;
     }
 
-    async push(patient) {
+    async push(id) {
         const addPatient = promisify(this.queue.rpush).bind(this.queue);
-        await addPatient(this.redisListName, JSON.stringify(patient)); // stringify better in service
+        await addPatient(this.redisListName, id);
 
-        return patient;
+        return id;
     }
 
     async shift() {
         const takePatient = promisify(this.queue.lpop).bind(this.queue);
-        const patient = await takePatient(this.redisListName);
+        const patientID = await takePatient(this.redisListName);
 
-        return JSON.parse(patient); // parse better in service
+        return patientID;
     }
 
     async isEmpty() {

@@ -1,4 +1,3 @@
-import Resolution from '../interface/Resolution.js';
 import { resolutionRepository } from '../database/storage-factory.js';
 
 class ResolutionStorageService {
@@ -7,9 +6,7 @@ class ResolutionStorageService {
         this.currentResolution = null;
     }
 
-    async addNewResolution(newResolutionContent, currentPatient, ttl = false) {
-        const resolution = new Resolution(newResolutionContent, currentPatient);
-
+    async addNewResolution(resolution, ttl = false) {
         try {
             const result = await this.resolutionRepository.push(resolution, ttl);
 
@@ -21,12 +18,12 @@ class ResolutionStorageService {
         }
     }
 
-    async findResolution(patientName, isFromDoctor) {
+    async findResolution(patientID, isFromDoctor) {
         try {
-            const result = await this.resolutionRepository.findResolution(patientName);
+            const result = await this.resolutionRepository.findResolution(patientID);
 
             if (isFromDoctor) {
-                this.currentResolution = JSON.parse(result);
+                this.currentResolution = result;
             }
 
             return result;
@@ -37,9 +34,9 @@ class ResolutionStorageService {
         }
     }
 
-    async deleteResolution(name = this.currentResolution.patient.name) {
+    async deleteResolution(patientID = this.currentResolution.patientID) {
         try {
-            const result = await this.resolutionRepository.deleteResolution(name);
+            const result = await this.resolutionRepository.deleteResolution(patientID);
 
             return result;
         } catch (err) {

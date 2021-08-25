@@ -1,6 +1,7 @@
 export default class Resolution {
-    constructor(content, patient) {
+    constructor(content, patientID, id) {
+        this.id = id;
         this.content = content;
-        this.patient = patient;
+        this.patientID = patientID;
     }
 }

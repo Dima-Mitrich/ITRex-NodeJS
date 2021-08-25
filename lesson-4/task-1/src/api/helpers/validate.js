@@ -18,5 +18,10 @@ const nameSchema = {
     type: 'string', maxLength: MAX_LENGTH, minLength: MIN_LENGTH,
 };
 
+const idSchema = {
+    type: 'string', minLength: MIN_LENGTH,
+};
+
 export const validateNewResolution = ajv.compile(addResolutionSchema);
 export const validateNameParams = ajv.compile(nameSchema);
+export const validateIdParams = ajv.compile(idSchema);

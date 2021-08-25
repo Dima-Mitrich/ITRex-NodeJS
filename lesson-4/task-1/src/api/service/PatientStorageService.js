@@ -1,19 +1,16 @@
-import Patient from '../interface/Patient.js';
 import { patientRepository } from '../database/storage-factory.js';
-import { NOT_FOUND_MESSAGE } from '../../constants.js';
+import { NOT_FOUND_MESSAGE, SUCCESS_MESSAGE } from '../../constants.js';
 
 export class PatientStorageService {
     constructor(patientRepository) {
         this.patientRepository = patientRepository;
     }
 
-    async addPatient(name) {
-        const patient = new Patient(name);
-
+    async addPatient(patient) {
         try {
             await this.patientRepository.push(patient);
 
-            return patient;
+            return SUCCESS_MESSAGE;
         } catch (err) {
             console.log(err);
 
@@ -21,27 +18,31 @@ export class PatientStorageService {
         }
     }
 
-    async takePatient() {
+    async deletePatient(patient) {
         try {
-            const patient = await this.patientRepository.shift();
-
-            if (!patient) {
-                throw new Error(NOT_FOUND_MESSAGE);
-            } else return patient;
-        } catch (err) {
-            console.log(err);
-
-            return err;
-        }
-    }
-
-    async isEmpty() {
-        try {
-            const result = await this.patientRepository.isEmpty();
+            const result = await this.patientRepository.delete(patient);
 
             return result;
         } catch (err) {
             console.log(err);
+
+            return err;
+        }
+    }
+
+    async getPatient(name, id) {
+        try {
+            const result = name
+                ? await this.patientRepository.getByName(name)
+                : await this.patientRepository.getById(id);
+
+            if (result) {
+                return result;
+            } else {
+                throw new Error(NOT_FOUND_MESSAGE);
+            }
+        } catch (err) {
+            // console.log(err);
 
             return err;
         }

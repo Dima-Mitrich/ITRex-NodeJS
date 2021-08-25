@@ -1,7 +1,7 @@
 import express from 'express';
 import { STATUSES } from '../constants.js';
-import resolutionController from '../api/controllers/resolutionController.js';
-import { validateNewResolution, validateNameParams } from '../api/helpers/validate.js';
+import resolutionController from '../api/controllers/ResolutionController.js';
+import { validateNewResolution, validateNameParams, validateIdParams } from '../api/helpers/validate.js';
 
 const resolutionRouter = express.Router();
 
@@ -20,8 +20,8 @@ resolutionRouter.post('/new', (req, res, next) => {
     res.status(result.status).send(result.value);
 });
 
-resolutionRouter.delete('/:name', (req, res, next) => {
-    validateNameParams(req.params.name)
+resolutionRouter.delete('/:patientID', (req, res, next) => {
+    validateIdParams(req.params.patientID)
 
         ? next()
 

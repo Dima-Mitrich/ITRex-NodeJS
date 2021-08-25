@@ -1,10 +1,10 @@
 /* eslint-disable */
-import queueController from '../api/controllers/queueController.js';
-import resolutionController from '../api/controllers/resolutionController.js';
+import patientController from '../api/controllers/PatientController.js';
+import resolutionController from '../api/controllers/ResolutionController.js';
 import config from '../../config.js';
 import { REDIS_STORAGE_NAME, STATUSES } from '../constants.js';
 
-const patientService = queueController.queueService;
+const patientService = patientController.queueService;
 const resolutionService = resolutionController.resolutionListService;
 
 if (config.app.storageType === REDIS_STORAGE_NAME) {
@@ -19,7 +19,7 @@ describe('queue controler have to', () => {
 
     test('add patient', async () => {
         patientService.addPatient = jest.fn((name) => ({ name: name }));
-        const res = await queueController.addInQueue('dimoz');
+        const res = await patientController.addInQueue('dimoz');
 
         expect(patientService.addPatient).toBeCalled();
         expect(res.status).toBe(STATUSES.Created);
@@ -29,7 +29,7 @@ describe('queue controler have to', () => {
     test('get patient', async () => {
         patientService.takePatient = jest.fn(() => ({ name: 'dimoz' }));
         patientService.isEmpty = jest.fn(() => true);
-        const res = await queueController.getPatient();
+        const res = await patientController.getPatient();
 
         expect(patientService.takePatient).toBeCalled();
         expect(patientService.isEmpty).toBeCalled();
@@ -40,14 +40,14 @@ describe('queue controler have to', () => {
 
     test('return isEmpty value', async () => {
         patientService.isEmpty = jest.fn(() => true);
-        const res = await queueController.isEmpty();
+        const res = await patientController.isEmpty();
 
         expect(res).toBe(true);
     });
 
     test('failed with add patient', async () => {
         patientService.addPatient = jest.fn((name) => new Error('error'));
-        const res = await queueController.addInQueue('dimoz');
+        const res = await patientController.addInQueue('dimoz');
 
         expect(patientService.addPatient).toBeCalled();
         expect(res.status).toBe(STATUSES.ServerError);
@@ -58,7 +58,7 @@ describe('queue controler have to', () => {
         patientService.takePatient = jest.fn(() => new Error('not found'));
         patientService.isEmpty = jest.fn(() => true);
 
-        const res = await queueController.getPatient();
+        const res = await patientController.getPatient();
 
         expect(patientService.takePatient).toBeCalled();
         expect(patientService.isEmpty).toBeCalled();

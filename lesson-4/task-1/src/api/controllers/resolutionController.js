@@ -1,3 +1,6 @@
+import { v4 as uuidv4 } from 'uuid';
+import patientController from './PatientController.js';
+import Resolution from '../interface/Resolution.js';
 import resolutionStorageService from '../service/ResolutionStorageService.js';
 import handleError from '../helpers/handleError.js';
 import { STATUSES } from '../../constants.js';
@@ -8,7 +11,8 @@ class ResolutionController {
     }
 
     async addResolution(newResolutionContent, currentPatient, ttl) {
-        const result = await this.resolutionListService.addNewResolution(newResolutionContent, currentPatient, ttl);
+        const resolution = new Resolution(newResolutionContent, currentPatient.id, uuidv4());
+        const result = await this.resolutionListService.addNewResolution(resolution, ttl);
 
         return handleError(result, STATUSES.Created);
     }
@@ -20,7 +24,8 @@ class ResolutionController {
     }
 
     async findResolution(name, isDoctor) {
-        const result = await this.resolutionListService.findResolution(name, isDoctor);
+        const patient = await patientController.getPatient({ name });
+        const result = await this.resolutionListService.findResolution(patient.value, isDoctor);
 
         return handleError(result, STATUSES.OK);
     }

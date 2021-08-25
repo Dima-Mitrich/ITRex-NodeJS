@@ -1,10 +1,11 @@
 export default class Patient {
-    constructor(name) {
+    constructor(name, id) {
         this.name = name;
-        this.resolution = null;
+        this.resolutionID = null;
+        this.id = id;
     }
 
-    addResolution(resolution) {
-        this.resolution = resolution;
+    addResolution(resolutionID) {
+        this.resolution_id = resolutionID;
     }
 }

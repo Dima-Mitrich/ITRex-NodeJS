@@ -8,6 +8,8 @@ export const { TTL_MILSEC } = config.app;
 
 export const REDIS_QUEUE_NAME = 'queuePatient';
 
+export const REDIS_PATIENT_STORAGE_NAME = 'storagePatient';
+
 export const REDIS_STORAGE_NAME = 'redis';
 
 export const IN_MEMORY_STORAGE_NAME = 'inMemory';

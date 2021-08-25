@@ -78,8 +78,9 @@ async function findResolutionForDoctor() {
         doctorFieldWithFoundedResolution.innerHTML = 'There is no such patient';
     } else {
         const foundResolution = await response.json();
+        console.log(foundResolution);
         doctorFieldWithFoundedResolution.innerHTML = foundResolution.content;
-        foundedPatient = foundResolution.patient;
+        foundedPatient = foundResolution.patientID;
     }
 
     deleteResolutionButton.disabled = false;
@@ -89,7 +90,7 @@ async function deleteResolution() {
     const resolutionContent = doctorFieldWithFoundedResolution.innerHTML;
 
     if (resolutionContent && resolutionContent !== 'There is no such patient') {
-        const response = await fetch(`resolutions/${foundedPatient.name}`, {
+        const response = await fetch(`resolutions/${foundedPatient}`, {
             method: 'DELETE',
         });
         const res = await response.text();
