@@ -1,5 +1,5 @@
 import { queueRepository } from '../database/storage-factory.js';
-import { NOT_FOUND_MESSAGE, SUCCESS_MESSAGE } from '../../constants.js';
+import { NOT_FOUND_MESSAGE } from '../../constants.js';
 
 export class QueueService {
     constructor(queueRepository) {
@@ -8,9 +8,9 @@ export class QueueService {
 
     async addPatient(id) {
         try {
-            await this.queueRepository.push(id);
+            const result = await this.queueRepository.push(id);
 
-            return SUCCESS_MESSAGE;
+            return result;
         } catch (err) {
             console.log(err);
 

@@ -50,7 +50,7 @@ async function addNewResolutionForCurrentPatient() {
     const newResolutionContent = newResolutionInput.value;
     const ttl = addResolutionWithTTLCheckbox.checked;
 
-    const response = await fetch('/resolutions/new', {
+    const response = await fetch('/resolutions/add', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',

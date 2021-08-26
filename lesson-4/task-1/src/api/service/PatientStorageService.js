@@ -1,5 +1,5 @@
 import { patientRepository } from '../database/storage-factory.js';
-import { NOT_FOUND_MESSAGE, SUCCESS_MESSAGE } from '../../constants.js';
+import { NOT_FOUND_MESSAGE } from '../../constants.js';
 
 export class PatientStorageService {
     constructor(patientRepository) {
@@ -8,9 +8,9 @@ export class PatientStorageService {
 
     async addPatient(patient) {
         try {
-            await this.patientRepository.push(patient);
+            const result = await this.patientRepository.push(patient);
 
-            return SUCCESS_MESSAGE;
+            return result;
         } catch (err) {
             console.log(err);
 

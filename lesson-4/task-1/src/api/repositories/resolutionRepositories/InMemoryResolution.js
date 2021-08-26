@@ -18,7 +18,7 @@ export default class InMemoryResolution {
             setTimeout(() => { this.deleteResolution(patientID); }, TTL_MILSEC);
         }
 
-        return SUCCESS_MESSAGE;
+        return resolution;
     }
 
     findResolution(patientID) {

@@ -8,6 +8,8 @@ export default class MySQLPatient {
             name: patient.name,
             id: patient.id,
         });
+
+        return patient;
     }
 
     async getByName(name) {

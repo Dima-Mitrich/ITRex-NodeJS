@@ -1,78 +1,101 @@
 /* eslint-disable */
+import sequelize from '../dbInitialization.js';
 import patientController from '../api/controllers/PatientController.js';
 import resolutionController from '../api/controllers/ResolutionController.js';
 import config from '../../config.js';
-import { REDIS_STORAGE_NAME, STATUSES } from '../constants.js';
+import { MY_SQL_STORAGE_NAME, REDIS_STORAGE_NAME, STATUSES } from '../constants.js';
 
-const patientService = patientController.queueService;
+const queueService = patientController.queueService;
 const resolutionService = resolutionController.resolutionListService;
+const patientStorageService = patientController.patientStorageService;
 
 if (config.app.storageType === REDIS_STORAGE_NAME) {
     afterAll(done => {
-        patientService.patientRepository.closeConnection();
-        resolutionService.resolutionRepository.closeConnection();
+        queueService.queueRepository.closeConnection();
         done();
     });
-}
+} else if (config.app.storageType === MY_SQL_STORAGE_NAME) {
+    afterAll(done => {
+        sequelize.close();
+        done();
+    })
+};
 
-describe('queue controler have to', () => {
+afterEach(() => {
+    jest.clearAllMocks();
+});
 
-    test('add patient', async () => {
-        patientService.addPatient = jest.fn((name) => ({ name: name }));
+describe('patient controler have to', () => {
+
+    test('add patient in queue', async () => {
+        queueService.addPatient = jest.fn((name) => ({ name }));
         const res = await patientController.addInQueue('dimoz');
 
-        expect(patientService.addPatient).toBeCalled();
-        expect(res.status).toBe(STATUSES.Created);
-        expect(res.value.name).toBe('dimoz');
+        expect(queueService.addPatient).toBeCalled();
+        expect(res.name).toBe('dimoz');
     });
 
     test('get patient', async () => {
-        patientService.takePatient = jest.fn(() => ({ name: 'dimoz' }));
-        patientService.isEmpty = jest.fn(() => true);
-        const res = await patientController.getPatient();
+        patientStorageService.getPatient = jest.fn(() => ({ name: 'dimoz' }));
+        const res = await patientController.getPatient({ id: 3 });
 
-        expect(patientService.takePatient).toBeCalled();
-        expect(patientService.isEmpty).toBeCalled();
+        expect(patientStorageService.getPatient).toBeCalled();
         expect(res.status).toBe(STATUSES.OK);
         expect(res.value.name).toBe('dimoz');
-        expect(res.value.last).toBe(true);
     });
 
     test('return isEmpty value', async () => {
-        patientService.isEmpty = jest.fn(() => true);
+        queueService.isEmpty = jest.fn(() => true);
         const res = await patientController.isEmpty();
 
         expect(res).toBe(true);
     });
 
-    test('failed with add patient', async () => {
-        patientService.addPatient = jest.fn((name) => new Error('error'));
-        const res = await patientController.addInQueue('dimoz');
+    test('failed with add patient in queue', async () => {
+        queueService.addPatient = jest.fn((id) => new Error('error'));
+        const res = await patientController.addInQueue(4);
 
-        expect(patientService.addPatient).toBeCalled();
-        expect(res.status).toBe(STATUSES.ServerError);
-        expect(res.value).toBeInstanceOf(Error);
+        expect(queueService.addPatient).toBeCalled();
+        expect(res).toBeInstanceOf(Error);
     });
 
     test('failed with take patient', async () => {
-        patientService.takePatient = jest.fn(() => new Error('not found'));
-        patientService.isEmpty = jest.fn(() => true);
+        patientStorageService.getPatient = jest.fn((name, id) => new Error('not found'));
 
-        const res = await patientController.getPatient();
+        const res = await patientController.getPatient({ name: 'dima', id: null });
 
-        expect(patientService.takePatient).toBeCalled();
-        expect(patientService.isEmpty).toBeCalled();
+        expect(patientStorageService.getPatient).toBeCalled();
         expect(res.status).toBe(STATUSES.NotFound);
         expect(res.value).toBeInstanceOf(Error);
         expect(res.value.message).toBe('not found');
-    })
+    });
+
+    test('shift patient from queue', async () => {
+        queueService.takePatient = jest.fn(() => 4);
+        patientController.getPatient = jest.fn((id) => ({ status: STATUSES.OK, value: { name: 'dima' } }));
+
+        const res = await patientController.shiftPatient();
+        expect(res.status).toBe(STATUSES.OK);
+        expect(res.value.name).toBe('dima');
+        expect(res.value.last).toBe(true);
+    });
+
+    test('failed with shift patent', async () => {
+        queueService.takePatient = jest.fn(() => undefined);
+        patientController.getPatient = jest.fn((id) => ({ status: STATUSES.NotFound, value: new Error('not found') }));
+
+        const res = await patientController.shiftPatient();
+        expect(res.status).toBe(STATUSES.NotFound);
+        expect(res.value).toBeInstanceOf(Error);
+        expect(res.value.message).toBe('not found');
+    });
 });
 
 describe('resolution controller have to', () => {
 
     test('add new resolution', async () => {
         resolutionService.addNewResolution = jest.fn(() => 'success');
-        const res = await resolutionController.addResolution();
+        const res = await resolutionController.addResolution('blah', { id: '2' }, false);
 
         expect(resolutionService.addNewResolution).toBeCalled();
         expect(res.value).toBe('success');
@@ -89,6 +112,7 @@ describe('resolution controller have to', () => {
     });
 
     test('find resolution', async () => {
+        patientController.getPatient = jest.fn(() => ({ value: 'dima' }))
         resolutionService.findResolution = jest.fn((name) => ({ content: 'blah', patient: name }));
         const res = await resolutionController.findResolution('dima');
 

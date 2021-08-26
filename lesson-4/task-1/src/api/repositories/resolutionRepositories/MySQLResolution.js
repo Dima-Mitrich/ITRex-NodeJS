@@ -33,7 +33,7 @@ export default class MySQLResolution {
             });
         }
 
-        return SUCCESS_MESSAGE;
+        return resolution;
     }
 
     async findResolution(patientID) {

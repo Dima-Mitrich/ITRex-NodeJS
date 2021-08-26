@@ -5,9 +5,9 @@ import { validateNewResolution, validateNameParams, validateIdParams } from '../
 
 const resolutionRouter = express.Router();
 
-resolutionRouter.use('/new', express.json());
+resolutionRouter.use('/add', express.json());
 
-resolutionRouter.post('/new', (req, res, next) => {
+resolutionRouter.post('/add', (req, res, next) => {
     validateNewResolution(req.body)
 
         ? next()

@@ -9,7 +9,7 @@ npm install.
 ```
 Хранилище резолюций поддерживает TTL опцию: если Вы хотите чтобы резолюция хранилась некоторое время (default 10sec),
 а затем удалялась - поставьте галочку в поле "Add the resolution to storage with TTL?", если добавление без TTL резолюция 
-будет храниться до перезагрузки страницы.
+будет храниться до перезагурузки сервера.
 
 Что бы выписать новую резолюцию новому пациенту не забывайте добавить его в очередь и нажать NEXT у доктора.
 
@@ -47,7 +47,7 @@ docker run -p 3000:3000 -d dima95/itrex-laba-project
 
 Для запуска тестов введите в консоль команду:
 ```
-npm test --runInBand
+npm test
 ```
 
 ## Типы хранилища
@@ -57,6 +57,8 @@ npm test --runInBand
 app: {
         port: parseInt(process.env.DEV_APP_PORT, 10) || 3000,
         TTL_MILSEC: 10000,
+        password,
+        userName,
         storageType,
     },
 ```
@@ -65,6 +67,8 @@ app: {
 app: {
         port: parseInt(process.env.DEV_APP_PORT, 10) || 3000,
         TTL_MILSEC: 10000,
+        password,
+        userName,
         storageType: 'redis',
     },
 ```
@@ -73,6 +77,18 @@ app: {
 app: {
         port: parseInt(process.env.DEV_APP_PORT, 10) || 3000,
         TTL_MILSEC: 10000,
+        password,
+        userName,
         storageType:'inMemory',
+    },
+```
+или на
+```
+app: {
+        port: parseInt(process.env.DEV_APP_PORT, 10) || 3000,
+        TTL_MILSEC: 10000,
+        password,
+        userName,
+        storageType:'mySQL',
     },
 ```

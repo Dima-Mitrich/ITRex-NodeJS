@@ -11,14 +11,16 @@ patientRouter.get('/next', async (req, res) => {
     res.status(result.status).send(JSON.stringify(result.value));
 });
 
-patientRouter.post('/add/:name', (req, res, next) => {
-    validateNameParams(req.params.name)
+patientRouter.use('/add', express.json());
+
+patientRouter.post('/add', (req, res, next) => {
+    validateNameParams(req.body.name)
 
         ? next()
 
         : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
 }, async (req, res) => {
-    const result = await patientController.addPatient(req.params.name);
+    const result = await patientController.addPatient(req.body.name);
 
     res.status(result.status).send(result.value);
 });

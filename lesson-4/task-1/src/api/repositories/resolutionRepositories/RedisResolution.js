@@ -26,7 +26,7 @@ export default class RedisResolution {
                     : await addNewResolution(patientID, JSON.stringify(resolution));
             }
 
-            return SUCCESS_MESSAGE;
+            return resolution;
         } catch (err) {
             console.log(err);
 
