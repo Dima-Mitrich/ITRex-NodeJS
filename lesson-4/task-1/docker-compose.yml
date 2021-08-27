@@ -11,17 +11,18 @@ services:
             - 3000:3000
         environment: 
             NODE_ENV: dev
-            STORAGE_TYPE: redis
+            STORAGE_TYPE: mySQL
             DEV_APP_PORT: 3000
-        depends_on: [sql, redis]
-    sql:
+        depends_on: [mysql_server, redis]
+    mysql_server:
         image: mysql:8.0
         restart: always
         volumes:
             - dbdata:/var/lib/mysql
         environment: 
-            PASSWORD: dimozzz_4el
-            USER_NAME: root
+            - MYSQL_PASSWORD=dimozzz_4el
+            - MYSQL_ROOT_PASSWORD=dimozzz_4el
+            - MYSQL_DATABASE=HOSPITAL
     redis:
         image: redis:6.2
         restart: always

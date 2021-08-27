@@ -29,3 +29,9 @@ export const STATUSES = {
     ServerError: 500,
     Unavailable: 503,
 };
+
+export const PORTS = {
+    REDIS_PORT: 6379,
+    SQL_PORT: 3306,
+    APP_PORT: config.app.port,
+};

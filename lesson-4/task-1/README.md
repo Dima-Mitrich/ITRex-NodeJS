@@ -37,11 +37,16 @@ GET : http://localhost:3000/queue/resolution/:name - найти резолюци
 ```
 docker pull dima95/itrex-laba-project:latest
 ```
-а потом создайте контейнер из изображения и запустите его с помощью команды :
+а потом запустите docker-compose с помощью команды :
 ```
-docker run -p 3000:3000 -d dima95/itrex-laba-project
+docker compose up -d
 ```
 Приложение будет запущенно по адресу: http://localhost:3000/
+
+Чтобы остановить докер выполните команду:
+```
+docker compose down
+```
 
 ## Тесты
 
