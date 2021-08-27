@@ -1,0 +1,30 @@
+version: '3.8'
+
+services: 
+    app:
+        image: dima95/itrex-laba-project 
+        command: npm start
+        working_dir: /usr/src/app
+        volumes:
+            - ./:/itrex-laba-project
+        ports: 
+            - 3000:3000
+        environment: 
+            NODE_ENV: dev
+            STORAGE_TYPE: redis
+            DEV_APP_PORT: 3000
+        depends_on: [sql, redis]
+    sql:
+        image: mysql:8.0
+        restart: always
+        volumes:
+            - dbdata:/var/lib/mysql
+        environment: 
+            PASSWORD: dimozzz_4el
+            USER_NAME: root
+    redis:
+        image: redis:6.2
+        restart: always
+volumes:
+    dbdata:
+
