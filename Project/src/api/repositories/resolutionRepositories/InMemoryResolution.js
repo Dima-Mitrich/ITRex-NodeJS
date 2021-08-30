@@ -2,16 +2,16 @@ import { TTL_MILSEC, NOT_FOUND_MESSAGE, SUCCESS_MESSAGE } from '../../../constan
 
 export default class InMemoryResolution {
     constructor(resolutionStorage) {
-        this.resolutionList = resolutionStorage;
+        this.resolutionStorage = resolutionStorage;
     }
 
     push(resolution, ttl = false) {
         const { patientID } = resolution;
 
         if (this.isExist(patientID)) {
-            this.resolutionList[patientID].content += ` | ${resolution.content}`;
+            this.resolutionStorage[patientID].content += ` | ${resolution.content}`;
         } else {
-            this.resolutionList[patientID] = resolution;
+            this.resolutionStorage[patientID] = resolution;
         }
 
         if (ttl) {
@@ -22,7 +22,7 @@ export default class InMemoryResolution {
     }
 
     findResolution(patientID) {
-        const result = this.resolutionList[patientID];
+        const result = this.resolutionStorage[patientID];
 
         if (!result) {
             throw new Error(NOT_FOUND_MESSAGE);
@@ -32,13 +32,13 @@ export default class InMemoryResolution {
     }
 
     deleteResolution(patientID) {
-        delete this.resolutionList[patientID];
+        delete this.resolutionStorage[patientID];
 
         return SUCCESS_MESSAGE;
     }
 
     isExist(patientID) {
-        const res = patientID in this.resolutionList;
+        const res = patientID in this.resolutionStorage;
 
         return res;
     }
