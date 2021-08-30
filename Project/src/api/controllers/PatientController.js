@@ -15,7 +15,7 @@ class PatientController {
         let patient = await this.getPatient({ name });
         let result;
 
-        if (patient.status === 404) {
+        if (patient.status === STATUSES.NotFound) {
             patient = new Patient(name, uuidv4());
             await this.patientStorageService.addPatient(patient);
             result = await this.addInQueue(patient.id);
@@ -42,7 +42,7 @@ class PatientController {
         const patientID = await this.queueService.takePatient();
         const patient = await this.getPatient({ id: patientID });
 
-        if (patient.status !== 404) {
+        if (patient.status !== STATUSES.NotFound) {
             const isEmpty = await this.isEmpty();
             patient.value.last = isEmpty;
         }

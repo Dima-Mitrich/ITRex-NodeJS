@@ -2,7 +2,7 @@ import pkg from 'sequelize';
 
 const { DataTypes } = pkg;
 
-function resolutionDefine(sequelize) {
+export default async function resolutionDefine(sequelize) {
     sequelize.define('resolution', {
         id: {
             type: DataTypes.UUID,
@@ -19,6 +19,10 @@ function resolutionDefine(sequelize) {
             allowNull: false,
         },
     });
-}
 
-export default resolutionDefine;
+    try {
+        await sequelize.sync({ force: true });
+    } catch (err) {
+        console.log(err);
+    }
+}

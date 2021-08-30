@@ -1,9 +1,10 @@
 import redis from 'redis';
+import config from '../../../config.js';
 import { PORTS } from '../../constants.js';
 
 export default function createRedisClient(dataBaseNumber) {
     const client = redis.createClient({
-        host: 'redis',
+        host: config.app.redisHost,
         port: PORTS.REDIS_PORT,
     });
 

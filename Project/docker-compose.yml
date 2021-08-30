@@ -13,6 +13,8 @@ services:
             NODE_ENV: dev
             STORAGE_TYPE: mySQL
             DEV_APP_PORT: 3000
+            REDIS_HOST: redis
+            SQL_HOST: mysql_server
         depends_on: [mysql_server, redis]
     mysql_server:
         image: mysql:8.0

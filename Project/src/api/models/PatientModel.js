@@ -2,7 +2,7 @@ import pkg from 'sequelize';
 
 const { DataTypes } = pkg;
 
-function patientDefine(sequelize) {
+export default async function patientDefine(sequelize) {
     sequelize.define('patient', {
         id: {
             type: DataTypes.UUID,
@@ -15,6 +15,10 @@ function patientDefine(sequelize) {
             allowNull: false,
         },
     });
-}
 
-export default patientDefine;
+    try {
+        await sequelize.sync({ force: true });
+    } catch (err) {
+        console.log(err);
+    }
+}

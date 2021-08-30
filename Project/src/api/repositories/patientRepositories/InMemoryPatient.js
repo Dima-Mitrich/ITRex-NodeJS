@@ -5,7 +5,6 @@ export default class InMemoryPatient {
 
     push(patient) {
         this.storage.push(patient);
-        // console.log(this.storage);
 
         return patient;
     }

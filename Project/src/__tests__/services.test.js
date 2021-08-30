@@ -1,29 +1,12 @@
 /* eslint-disable */
-import sequelize from '../dbInitialization.js';
 import patientStorageService from '../api/service/PatientStorageService.js';
 import resolutionStorageService from '../api/service/ResolutionStorageService.js';
 import queueService from '../api/service/QueueService.js'
-import config from '../../config.js';
-import { NOT_FOUND_MESSAGE, REDIS_STORAGE_NAME, STATUSES, SUCCESS_MESSAGE } from '../constants.js';
+import { NOT_FOUND_MESSAGE } from '../constants.js';
 
 const patientRepository = patientStorageService.patientRepository;
 const resolutionRepository = resolutionStorageService.resolutionRepository;
 const queueRepository = queueService.queueRepository;
-
-
-if (config.app.storageType === REDIS_STORAGE_NAME) {
-    afterAll(done => {
-        queueRepository.closeConnection();
-        sequelize.close();
-        done();
-    });
-} else if (config.app.storageType === MY_SQL_STORAGE_NAME) {
-    afterAll(done => {
-        queueRepository.closeConnection();
-        sequelize.close();
-        done();
-    })
-};
 
 afterEach(() => {
     jest.clearAllMocks();

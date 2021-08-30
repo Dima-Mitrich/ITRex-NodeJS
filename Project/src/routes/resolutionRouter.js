@@ -9,9 +9,7 @@ resolutionRouter.use('/add', express.json());
 
 resolutionRouter.post('/add', (req, res, next) => {
     validateNewResolution(req.body)
-
         ? next()
-
         : res.status(STATUSES.BadRequest).send(validateNewResolution.errors);
 }, async (req, res) => {
     const { newResolutionContent, currentPatient, ttl } = req.body;
@@ -22,9 +20,7 @@ resolutionRouter.post('/add', (req, res, next) => {
 
 resolutionRouter.delete('/:patientID', (req, res, next) => {
     validateIdParams(req.params.patientID)
-
         ? next()
-
         : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
 }, async (req, res) => {
     const result = await resolutionController.deleteResolution();
@@ -34,9 +30,7 @@ resolutionRouter.delete('/:patientID', (req, res, next) => {
 
 resolutionRouter.get('/:name', (req, res, next) => {
     validateNameParams(req.params.name)
-
         ? next()
-
         : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
 }, async (req, res) => {
     const result = await resolutionController.findResolution(req.params.name, req.headers.isdoctor);

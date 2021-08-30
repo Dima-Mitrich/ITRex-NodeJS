@@ -8,7 +8,7 @@ import MySQLResolution from '../repositories/resolutionRepositories/MySQLResolut
 import MySQLPatient from '../repositories/patientRepositories/MySQLPatient.js';
 import InMemoryQueue from '../repositories/queueRepositories/InMemoryQueue.js';
 import RedisQueue from '../repositories/queueRepositories/RedisQueue.js';
-import sequelize from '../../dbInitialization.js';
+import dbInit from '../../dbInitialization.js';
 import { REDIS_STORAGE_NAME, IN_MEMORY_STORAGE_NAME, MY_SQL_STORAGE_NAME } from '../../constants.js';
 
 class StorageFactory {
@@ -33,6 +33,7 @@ class StorageFactory {
             queueRepository = new InMemoryQueue(queue);
         } else if (type === MY_SQL_STORAGE_NAME) {
             const client = createRedisClient(0);
+            const sequelize = dbInit();
             patientRepository = new MySQLPatient(sequelize.models.patient);
             resolutionRepository = new MySQLResolution(sequelize.models.resolution);
             queueRepository = new RedisQueue(client);

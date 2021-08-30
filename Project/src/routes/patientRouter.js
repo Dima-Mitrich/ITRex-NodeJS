@@ -15,9 +15,7 @@ patientRouter.use('/add', express.json());
 
 patientRouter.post('/add', (req, res, next) => {
     validateNameParams(req.body.name)
-
         ? next()
-
         : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
 }, async (req, res) => {
     const result = await patientController.addPatient(req.body.name);
