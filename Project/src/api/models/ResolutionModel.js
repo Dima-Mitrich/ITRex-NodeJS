@@ -21,7 +21,7 @@ export default async function resolutionDefine(sequelize) {
     });
 
     try {
-        await sequelize.sync();
+        await sequelize.sync({ force: true });
     } catch (err) {
         console.log(err);
     }
