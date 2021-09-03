@@ -20,6 +20,20 @@ export const SUCCESS_MESSAGE = 'success';
 
 export const NOT_FOUND_MESSAGE = 'not found';
 
+export const BAD_REQUEST_MESSAGE = 'bad request';
+
+export const WRONG_PASSWORD_MESSAGE = 'wrong password';
+
+export const WRONG_EMAIL_MESSAGE = 'wrong email';
+
+export const JWT_EXPIRED_MESSAGE = 'jwt expired';
+
+export const NO_TOKEN_MESSAGE = 'no token';
+
+export const NAME_IS_EXIST = 'such name is exist';
+
+export const EMAIL_IS_EXIST = 'such email is exist';
+
 export const STATUSES = {
     OK: 200,
     Created: 201,
@@ -28,6 +42,7 @@ export const STATUSES = {
     RequestTimeout: 408,
     ServerError: 500,
     Unavailable: 503,
+    Forbidden: 403,
 };
 
 export const PORTS = {

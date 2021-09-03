@@ -2,20 +2,16 @@ import pkg from 'sequelize';
 
 const { DataTypes } = pkg;
 
-export default async function resolutionDefine(sequelize) {
-    sequelize.define('resolution', {
-        id: {
+export default async function userDefine(sequelize) {
+    sequelize.define('user', {
+        user_id: {
             type: DataTypes.UUID,
-            primaryKey: true,
             allowNull: false,
+            primaryKey: true,
             unique: true,
         },
-        content: {
+        password: {
             type: DataTypes.STRING,
-            allowNull: false,
-        },
-        ttl: {
-            type: DataTypes.BOOLEAN,
             allowNull: false,
         },
     });

@@ -14,10 +14,22 @@ export default async function patientDefine(sequelize) {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        gender: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        age: {
+            type: DataTypes.TINYINT,
+            allowNull: false,
+        },
     });
 
     try {
-        await sequelize.sync({ force: true });
+        await sequelize.sync();
     } catch (err) {
         console.log(err);
     }

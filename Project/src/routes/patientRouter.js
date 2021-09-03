@@ -1,26 +1,31 @@
 import express from 'express';
-import patientController from '../api/controllers/PatientController.js';
-import { validateNameParams } from '../api/helpers/validate.js';
-import { STATUSES } from '../constants.js';
+import cookieParser from 'cookie-parser';
+import patientController from '../api/patient/controller/PatientController.js';
+import authController from '../api/auth/controller/AuthController.js';
 
 const patientRouter = express.Router();
 
 patientRouter.get('/next', async (req, res) => {
     const result = await patientController.shiftPatient();
 
-    res.status(result.status).send(JSON.stringify(result.value));
+    res.status(result.status).json(result.value);
 });
 
-patientRouter.use('/add', express.json());
+patientRouter.use('/', cookieParser());
 
-patientRouter.post('/add', (req, res, next) => {
-    validateNameParams(req.body.name)
-        ? next()
-        : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
+patientRouter.post('/', async (req, res, next) => {
+    const userID = await authController.checkToken(req.cookies.jwt);
+
+    if (userID.status === 200) {
+        req.userID = userID.value.id;
+        next();
+    } else {
+        res.status(userID.status).json(userID.value);
+    }
 }, async (req, res) => {
-    const result = await patientController.addPatient(req.body.name);
+    const result = await patientController.addInQueue(req.userID);
 
-    res.status(result.status).send(result.value);
+    res.status(result.status).json(result.value);
 });
 
 export default patientRouter;

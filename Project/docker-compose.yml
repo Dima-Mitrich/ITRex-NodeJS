@@ -11,10 +11,10 @@ services:
             - 3000:3000
         environment: 
             NODE_ENV: dev
-            STORAGE_TYPE: mySQL
             DEV_APP_PORT: 3000
             REDIS_HOST: redis
             SQL_HOST: mysql_server
+            SECRET_JWT_KEY: secretKey
         depends_on: 
             mysql_server:
                 condition: service_healthy

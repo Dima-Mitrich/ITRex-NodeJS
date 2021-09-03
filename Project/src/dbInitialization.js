@@ -2,6 +2,7 @@ import pkg from 'sequelize';
 import config from '../config.js';
 import patientDefine from './api/models/PatientModel.js';
 import resolutionDefine from './api/models/ResolutionModel.js';
+import userDefine from './api/models/UserModel.js';
 import { PORTS } from './constants.js';
 
 const { Sequelize, DataTypes } = pkg;
@@ -15,10 +16,19 @@ export default function dbInit() {
 
     resolutionDefine(sequelize);
     patientDefine(sequelize);
+    userDefine(sequelize);
 
     sequelize.models.resolution.belongsTo(sequelize.models.patient, {
         foreignKey: {
             name: 'patientID',
+            type: DataTypes.UUID,
+            allowNull: false,
+        },
+    });
+
+    sequelize.models.patient.belongsTo(sequelize.models.user, {
+        foreignKey: {
+            name: 'user_id',
             type: DataTypes.UUID,
             allowNull: false,
         },

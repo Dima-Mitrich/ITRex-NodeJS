@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./styles/sign-up.css" />
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="registration_container">
+        <h2>SIGN-UP</h2>
+        <form action="/sign-up" method="POST">
+            <label for="POST-name">Name:</label>
+            <input id="POST-name" type="text" name="name" required>
+            <label for="POST-email">Email:</label>
+            <input id="POST-email" type="email" name="email" required>
+            <label for="POST-birthday">Birthday:</label>
+            <input id="POST-birthday" type="date" name="birthday" required>
+            <div class="registration_container__gender">
+                <label>Gender:</label>
+                <input type="radio" name="gender" value="man" required>Man<br>
+                <input type="radio" name="gender" value="woman" required>Woman<br>
+            </div>
+            <label for="POST-password">Password:</label>
+            <input id="POST-password" name="password" type="password" required>
+            <button type="submit">SUBMIT</button>
+            <a href="/login">sign-in</a>
+        </form>
+    </div>
+</body>
+
+</html>

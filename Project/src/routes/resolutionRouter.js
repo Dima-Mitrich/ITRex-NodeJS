@@ -1,13 +1,15 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import { STATUSES } from '../constants.js';
-import resolutionController from '../api/controllers/ResolutionController.js';
+import resolutionController from '../api/resolution/controller/ResolutionController.js';
+import authController from '../api/auth/controller/AuthController.js';
 import { validateNewResolution, validateNameParams, validateIdParams } from '../api/helpers/validate.js';
 
 const resolutionRouter = express.Router();
 
-resolutionRouter.use('/add', express.json());
+resolutionRouter.use('/', express.json());
 
-resolutionRouter.post('/add', (req, res, next) => {
+resolutionRouter.post('/', (req, res, next) => {
     validateNewResolution(req.body)
         ? next()
         : res.status(STATUSES.BadRequest).send(validateNewResolution.errors);
@@ -33,9 +35,26 @@ resolutionRouter.get('/:name', (req, res, next) => {
         ? next()
         : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
 }, async (req, res) => {
-    const result = await resolutionController.findResolution(req.params.name, req.headers.isdoctor);
+    const result = await resolutionController.findResolution({ name: req.params.name }, req.headers.isdoctor);
 
     res.status(result.status).send(result.value);
+});
+
+resolutionRouter.use('/', cookieParser());
+
+resolutionRouter.get('/', async (req, res, next) => {
+    const userID = await authController.checkToken(req.cookies.jwt);
+
+    if (userID.status === 200) {
+        req.userID = userID.value.id;
+        next();
+    } else {
+        res.status(userID.status).json(userID.value);
+    }
+}, async (req, res) => {
+    const result = await resolutionController.findResolution({ userID: req.userID }, false);
+
+    res.status(result.status).json(result.value);
 });
 
 export default resolutionRouter;

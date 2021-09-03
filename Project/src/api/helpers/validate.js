@@ -22,6 +22,32 @@ const idSchema = {
     type: 'string', minLength: MIN_LENGTH,
 };
 
+const newUserSchema = {
+    type: 'object',
+    properties: {
+        name: { type: 'string', maxLength: MAX_LENGTH, minLength: MIN_LENGTH },
+        email: { type: 'string' },
+        birthday: { type: 'string' },
+        gender: { type: 'string' },
+        password: { type: 'string' },
+        age: { type: 'number', minimum: 1, maximum: 120 },
+    },
+    required: ['name', 'email', 'birthday', 'gender', 'password', 'age'],
+    additionalProperties: false,
+};
+
+const userLoginSchema = {
+    type: 'object',
+    properties: {
+        email: { type: 'string', minLength: MIN_LENGTH },
+        password: { type: 'string', minLength: MIN_LENGTH },
+    },
+    required: ['email', 'password'],
+    additionalProperties: false,
+};
+
 export const validateNewResolution = ajv.compile(addResolutionSchema);
 export const validateNameParams = ajv.compile(nameSchema);
 export const validateIdParams = ajv.compile(idSchema);
+export const validateNewUser = ajv.compile(newUserSchema);
+export const validateUserLogin = ajv.compile(userLoginSchema);
