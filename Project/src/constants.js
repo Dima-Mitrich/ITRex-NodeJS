@@ -34,6 +34,8 @@ export const NAME_IS_EXIST = 'such name is exist';
 
 export const EMAIL_IS_EXIST = 'such email is exist';
 
+export const WRONG_BIRTHDAY_DATE = 'invalid birthday date';
+
 export const STATUSES = {
     OK: 200,
     Created: 201,
@@ -43,6 +45,7 @@ export const STATUSES = {
     ServerError: 500,
     Unavailable: 503,
     Forbidden: 403,
+    Unauthorized: 401,
 };
 
 export const PORTS = {

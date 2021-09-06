@@ -29,10 +29,9 @@ const newUserSchema = {
         email: { type: 'string' },
         birthday: { type: 'string' },
         gender: { type: 'string' },
-        password: { type: 'string' },
-        age: { type: 'number', minimum: 1, maximum: 120 },
+        password: { type: 'string', minLength: MIN_LENGTH },
     },
-    required: ['name', 'email', 'birthday', 'gender', 'password', 'age'],
+    required: ['name', 'email', 'birthday', 'gender', 'password'],
     additionalProperties: false,
 };
 

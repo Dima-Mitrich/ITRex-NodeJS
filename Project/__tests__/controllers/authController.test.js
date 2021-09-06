@@ -78,7 +78,7 @@ describe('auth controller have to', () => {
 
         expect(res.value).toBeInstanceOf(Error);
         expect(res.value.message).toBe(WRONG_PASSWORD_MESSAGE);
-        expect(res.status).toBe(STATUSES.Forbidden);
+        expect(res.status).toBe(STATUSES.Unauthorized);
         expect(patientController.getPatient).toBeCalled();
         expect(userService.isPasswordMatches).toBeCalled();
         expect(jwtService.createJwtToken).toBeCalledTimes(0);
@@ -93,7 +93,7 @@ describe('auth controller have to', () => {
 
         expect(res.value).toBeInstanceOf(Error);
         expect(res.value.message).toBe(WRONG_EMAIL_MESSAGE);
-        expect(res.status).toBe(STATUSES.Forbidden);
+        expect(res.status).toBe(STATUSES.Unauthorized);
         expect(patientController.getPatient).toBeCalled();
         expect(userService.isPasswordMatches).toBeCalledTimes(0);
         expect(jwtService.createJwtToken).toBeCalledTimes(0);

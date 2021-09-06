@@ -17,7 +17,7 @@ export default async function userDefine(sequelize) {
     });
 
     try {
-        await sequelize.sync({ force: true });
+        await sequelize.sync();
     } catch (err) {
         console.log(err);
     }

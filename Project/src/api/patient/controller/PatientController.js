@@ -1,6 +1,6 @@
 import queueService from '../../queue/services/QueueService.js';
 import patientStorageService from '../services/PatientStorageService.js';
-import handleError from '../../helpers/handleError.js';
+import resultHandler from '../../helpers/resultHandler.js';
 import { STATUSES, NAME_IS_EXIST, EMAIL_IS_EXIST } from '../../../constants.js';
 
 class PatientController {
@@ -12,14 +12,14 @@ class PatientController {
     async addPatient(patient) {
         const result = this.patientStorageService.addPatient(patient);
 
-        return handleError(result, STATUSES.Created);
+        return resultHandler(result, STATUSES.Created);
     }
 
     async addInQueue(userID) {
         const patient = await this.getPatient({ userID });
         const result = await this.queueService.addPatient(patient.value.id);
 
-        return handleError(result, STATUSES.Created);
+        return resultHandler(result, STATUSES.Created);
     }
 
     async getPatient({
@@ -27,7 +27,7 @@ class PatientController {
     }) {
         const patient = await this.patientStorageService.getPatient(name, id, email, userID);
 
-        return handleError(patient, STATUSES.OK);
+        return resultHandler(patient, STATUSES.OK);
     }
 
     async shiftPatient() {
