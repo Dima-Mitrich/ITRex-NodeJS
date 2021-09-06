@@ -4,7 +4,7 @@ import jwtService from '../services/JwtService.js';
 import handleError from '../../helpers/handleError.js';
 import patientController from '../../patient/controller/PatientController.js';
 import {
-    STATUSES, WRONG_EMAIL_MESSAGE, WRONG_PASSWORD_MESSAGE, NO_TOKEN_MESSAGE,
+    STATUSES, WRONG_EMAIL_MESSAGE, WRONG_PASSWORD_MESSAGE, NO_TOKEN_MESSAGE, EMAIL_IS_EXIST,
 } from '../../../constants.js';
 
 class AuthController {
@@ -16,7 +16,7 @@ class AuthController {
     async signUpNewPatient(patient) {
         try {
             const isExist = await patientController.isExist(patient);
-            if (isExist) throw isExist;
+            if (isExist) throw new Error(EMAIL_IS_EXIST);
 
             const { password } = patient;
             const newUser = await this.createNewUser(password);
@@ -30,8 +30,6 @@ class AuthController {
 
             return handleError(result, STATUSES.Created);
         } catch (err) {
-            console.log(err);
-
             return handleError(err);
         }
     }

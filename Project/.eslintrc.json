@@ -40,5 +40,6 @@
         "no-shadow": "off",
         "class-methods-use-this": "off",
         "max-classes-per-file":"off"
-    }
+    },
+    "ignorePatterns": "__tests__"
 }

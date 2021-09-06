@@ -6,21 +6,23 @@ import RedisQueue from './queue/repositories/RedisQueue.js';
 import dbInit from '../dbInitialization.js';
 
 function repositoryCreater(mode) {
-    if (mode === 'test') return '';
+    if (mode === 'test') {
+        return {
+            patientRepository: new MySQLPatient(),
+            resolutionRepository: new MySQLResolution(),
+            queueRepository: new RedisQueue(),
+            userRepository: new UserRepository(),
+        };
+    }
 
     const client = createRedisClient(0);
     const sequelize = dbInit();
 
-    const patientRepository = new MySQLPatient(sequelize.models.patient);
-    const resolutionRepository = new MySQLResolution(sequelize.models.resolution);
-    const queueRepository = new RedisQueue(client);
-    const userRepository = new UserRepository(sequelize.models.user);
-
     return {
-        patientRepository,
-        resolutionRepository,
-        queueRepository,
-        userRepository,
+        patientRepository: new MySQLPatient(sequelize.models.patient),
+        resolutionRepository: new MySQLResolution(sequelize.models.resolution),
+        queueRepository: new RedisQueue(client),
+        userRepository: new UserRepository(sequelize.models.user),
     };
 }
 
