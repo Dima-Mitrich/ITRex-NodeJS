@@ -31,6 +31,7 @@ class AuthController {
             patient.id = uuidv4();
             patient.userID = newUser.value.userID;
             patient.password = newUser.value.password;
+            patient.age = age;
             const result = await patientController.addPatient(patient);
 
             return resultHandler(result, STATUSES.Created);
