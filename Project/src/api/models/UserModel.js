@@ -14,10 +14,15 @@ export default async function userDefine(sequelize) {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        login: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+        },
     });
 
     try {
-        await sequelize.sync();
+        await sequelize.sync({ force: true });
     } catch (err) {
         console.log(err);
     }

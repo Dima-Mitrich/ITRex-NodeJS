@@ -23,8 +23,8 @@ class AuthController {
             const isExist = await patientController.isExist(patient);
             if (isExist) throw new Error(EMAIL_IS_EXIST);
 
-            const { password } = patient;
-            const newUser = await this.createNewUser(password);
+            const { password, email } = patient;
+            const newUser = await this.createNewUser(password, email);
 
             if (newUser.status !== STATUSES.Created) throw new Error(newUser.value.message);
 
@@ -40,8 +40,8 @@ class AuthController {
         }
     }
 
-    async createNewUser(password) {
-        const user = await this.userService.createNewUser({ password, userID: uuidv4() });
+    async createNewUser(password, email) {
+        const user = await this.userService.createNewUser({ password, userID: uuidv4(), email });
 
         return resultHandler(user, STATUSES.Created);
     }

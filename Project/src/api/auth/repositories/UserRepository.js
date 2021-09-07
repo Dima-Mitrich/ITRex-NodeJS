@@ -7,6 +7,7 @@ export default class UserRepository {
         await this.model.create({
             user_id: user.userID,
             password: user.password,
+            login: user.email,
         });
 
         return user;
