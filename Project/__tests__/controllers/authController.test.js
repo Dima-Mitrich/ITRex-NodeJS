@@ -27,7 +27,8 @@ describe('auth controller have to', () => {
         }));
         patientController.addPatient = jest.fn(({ userID, password, id, email, name }) => ({ userID, name, email, id }));
 
-        const res = await authController.signUpNewPatient({ name: 'dima', email: 'email' });
+        const res = await authController.signUpNewPatient({ name: 'dima', email: 'email', birthday: '15-11-1995' });
+        console.log(res);
 
         expect(res.status).toBe(STATUSES.Created);
         expect(res.value.name).toBe('dima');
@@ -109,7 +110,7 @@ describe('auth controller have to', () => {
         }));
         patientController.addPatient = jest.fn(({ userID, password, id, email, name }) => ({ userID, name, email, id }));
 
-        const res = await authController.signUpNewPatient({ name: 'dima', email: 'email' });
+        const res = await authController.signUpNewPatient({ name: 'dima', email: 'email', birthday: '15-11-1995' });
 
         expect(res.status).toBe(STATUSES.BadRequest);
         expect(res.value).toBeInstanceOf(Error);
