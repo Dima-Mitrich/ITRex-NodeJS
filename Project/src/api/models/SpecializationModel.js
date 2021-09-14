@@ -1,27 +1,26 @@
 import pkg from 'sequelize';
 
-const { DataTypes } = pkg;
+const { DataTypes, UUIDV4 } = pkg;
 
-export default async function resolutionDefine(sequelize) {
-    sequelize.define('resolution', {
+export default async function specializationDefine(sequelize) {
+    sequelize.define('specialization', {
         id: {
             type: DataTypes.UUID,
+            defaultValue: UUIDV4,
             primaryKey: true,
             allowNull: false,
             unique: true,
         },
-        content: {
+        specialization: {
             type: DataTypes.STRING,
+            unique: true,
             allowNull: false,
         },
-        ttl: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-        },
+
     });
 
     try {
-        await sequelize.models.resolution.sync({ force: true });
+        await sequelize.models.specialization.sync({ force: true });
     } catch (err) {
         console.log(err);
     }

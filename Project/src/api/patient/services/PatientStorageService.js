@@ -50,7 +50,7 @@ export class PatientStorageService {
                 throw new Error(NOT_FOUND_MESSAGE);
             }
         } catch (err) {
-            // console.log(err);
+            console.log(err);
 
             return err;
         }

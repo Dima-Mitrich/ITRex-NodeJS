@@ -2,9 +2,10 @@ import jwt from 'jsonwebtoken';
 import config from '../../../../config.js';
 
 class JwtService {
-    createJwtToken(id) {
+    createJwtToken(role, id) {
         const payload = {
             id,
+            role,
         };
 
         return jwt.sign(payload, config.app.secretKey, { expiresIn: config.app.jwtExpTime });

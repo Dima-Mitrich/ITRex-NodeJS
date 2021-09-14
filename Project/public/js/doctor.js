@@ -15,6 +15,8 @@ const addResolutionWithTTLCheckbox = document.getElementById('add-ttl-checkbox')
 const queueListDoctorInterface = document.getElementById('currentPatientName_doctorInterface');
 const patientCurrentStatus = document.getElementById('patient-current-status');
 const doctorFieldWithFoundedResolution = document.getElementById('foundResolutionField__doctorInterface');
+const doctorName = document.getElementById('doc_name');
+const doctorSpec = document.getElementById('spec');
 
 nextPatientButton.addEventListener('click', callNextPatient);
 addNewResolutionButton.addEventListener('click', addNewResolutionForCurrentPatient);
@@ -24,19 +26,31 @@ deleteResolutionButton.addEventListener('click', deleteResolution);
 newResolutionInput.addEventListener('input', addButtonStatusChange(addNewResolutionButton));
 searchResolutionDoctorInput.addEventListener('input', addButtonStatusChange(showResolutionToDoctorButton));
 
+window.addEventListener('load', async () => {
+    const response = await fetch('/doctor/doctor-data');
+    const data = await response.json();
+    for (const elem of data) {
+        const item = document.createElement('option');
+        item.textContent = elem;
+        item.value = elem;
+        doctorSpec.appendChild(item);
+    }
+});
+
 async function callNextPatient() {
-    const response = await fetch('/patients/next');
+    const spec = doctorSpec.value;
+    const response = await fetch(`/patient/next?spec=${spec}`);
 
     const patient = await response.json();
 
     currentPatient = patient;
 
     queueListDoctorInterface.innerHTML = currentPatient.name;
-    patientCurrentStatus.innerHTML = 'at an appointment';
-
-    if (patient.last) {
-        nextPatientButton.disabled = true;
-    }
+    // patientCurrentStatus.innerHTML = 'at an appointment'; //при разделении страниц отвалилось
+    //
+    // if (patient.last) {
+    //     nextPatientButton.disabled = true;
+    // }
 }
 
 async function addNewResolutionForCurrentPatient() {

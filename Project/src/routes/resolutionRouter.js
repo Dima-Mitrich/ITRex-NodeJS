@@ -43,7 +43,7 @@ resolutionRouter.get('/:name', (req, res, next) => {
 resolutionRouter.use('/', cookieParser());
 
 resolutionRouter.get('/', async (req, res, next) => {
-    const userID = await authController.checkToken(req.cookies.jwt);
+    const userID = await authController.checkToken(req.cookies.jwtPatient);
 
     if (userID.status === 200) {
         req.userID = userID.value.id;

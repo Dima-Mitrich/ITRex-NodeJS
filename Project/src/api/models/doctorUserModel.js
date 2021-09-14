@@ -1,11 +1,12 @@
 import pkg from 'sequelize';
 
-const { DataTypes } = pkg;
+const { DataTypes, UUIDV4 } = pkg;
 
-export default async function patientUserDefine(sequelize) {
-    sequelize.define('patientUser', {
+export default async function doctorUserDefine(sequelize) {
+    sequelize.define('doctorUser', {
         user_id: {
             type: DataTypes.UUID,
+            defaultValue: UUIDV4,
             allowNull: false,
             primaryKey: true,
             unique: true,
@@ -22,7 +23,7 @@ export default async function patientUserDefine(sequelize) {
     });
 
     try {
-        await sequelize.models.patientUser.sync({ force: true });
+        await sequelize.models.doctorUser.sync({ force: true });
     } catch (err) {
         console.log(err);
     }

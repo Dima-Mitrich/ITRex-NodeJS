@@ -9,7 +9,7 @@
     text-align: center;
 }
 
-.sign-in_container section {
+.sign-in_container form {
     display: flex;
     flex-direction: column;
 }

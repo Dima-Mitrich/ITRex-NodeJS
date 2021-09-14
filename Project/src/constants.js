@@ -53,3 +53,8 @@ export const PORTS = {
     SQL_PORT: 3306,
     APP_PORT: config.app.port,
 };
+
+export const USER_TYPE = {
+    PATIENT: 'patient',
+    DOCTOR: 'doctor',
+};

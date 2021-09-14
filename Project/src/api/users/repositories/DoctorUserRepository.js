@@ -1,4 +1,4 @@
-export default class UserRepository {
+export default class DoctorUserRepository {
     constructor(model) {
         this.model = model;
     }
