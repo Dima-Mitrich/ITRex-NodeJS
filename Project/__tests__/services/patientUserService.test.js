@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
 import SequelizeMock from 'sequelize-mock';
-import PatientUserRepository from '../../src/api/users/repositories/PatientUserRepository';
-import patientUserService from '../../src/api/users/services/PatientUserService.js';
+import UserRepository from '../../src/api/users/repositories/UserRepository';
+import patientUserService from '../../src/api/users/services/UserService.js';
 import { NOT_FOUND_MESSAGE } from '../../src/constants.js';
 
-patientUserService.repository = new PatientUserRepository(new SequelizeMock())
+patientUserService.repository = new UserRepository(new SequelizeMock())
 
 const repository = patientUserService.repository;
 

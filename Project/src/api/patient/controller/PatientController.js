@@ -31,6 +31,7 @@ class PatientController {
 
     async shiftPatient(spec) {
         const patientID = await this.queueService.takePatient(spec);
+
         const patient = await this.getPatient({ id: patientID });
 
         if (patient.status !== STATUSES.NotFound) {
@@ -38,7 +39,7 @@ class PatientController {
             patient.value.last = isEmpty;
         }
 
-        return patient;
+        return resultHandler(patient, STATUSES.OK);
     }
 
     async isExist(patient) {

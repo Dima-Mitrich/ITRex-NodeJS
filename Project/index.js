@@ -1,3 +1,4 @@
+require('babel-core/register');
 import express from 'express';
 import path from 'path';
 import config from './config.js';

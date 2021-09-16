@@ -1,12 +1,14 @@
 import { dischargeInput, addButtonStatusChange } from './common.js';
 
 let currentPatient = null;
-let foundedPatient = null;
+const foundedPatient = null;
+let spec = null;
 
 const nextPatientButton = document.getElementById('nextButton');
 const addNewResolutionButton = document.getElementById('addNewResolutionButton');
 const showResolutionToDoctorButton = document.getElementById('showResolutionButton__doctorInterface');
 const deleteResolutionButton = document.getElementById('deleteResolutionButton');
+const delInput = document.getElementById('del_input');
 
 const newResolutionInput = document.getElementById('newResolutionInput');
 const searchResolutionDoctorInput = document.getElementById('searchResolution__doctorInterface');
@@ -38,12 +40,13 @@ window.addEventListener('load', async () => {
 });
 
 async function callNextPatient() {
-    const spec = doctorSpec.value;
+    spec = doctorSpec.value;
     const response = await fetch(`/patient/next?spec=${spec}`);
 
     const patient = await response.json();
 
-    currentPatient = patient;
+    currentPatient = patient.value;
+    console.log(currentPatient);
 
     queueListDoctorInterface.innerHTML = currentPatient.name;
     // patientCurrentStatus.innerHTML = 'at an appointment'; //при разделении страниц отвалилось
@@ -69,7 +72,9 @@ async function addNewResolutionForCurrentPatient() {
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
         },
-        body: JSON.stringify({ newResolutionContent, currentPatient, ttl }),
+        body: JSON.stringify({
+            newResolutionContent, currentPatient, ttl, spec,
+        }),
     });
 
     const text = await response.text();
@@ -93,24 +98,97 @@ async function findResolutionForDoctor() {
     } else {
         const foundResolution = await response.json();
         console.log(foundResolution);
-        doctorFieldWithFoundedResolution.innerHTML = foundResolution.content;
-        foundedPatient = foundResolution.patientID;
+        // doctorFieldWithFoundedResolution.innerHTML = foundResolution.content;
+        // foundedPatient = foundResolution.patientID;
+
+        doctorFieldWithFoundedResolution.innerHTML = '';
+
+        const resTable = document.createElement('table');
+        resTable.setAttribute('class', 'resolution_table');
+        resTable.setAttribute('id', 'res_table');
+
+        const tabHeaders = document.createElement('tr');
+
+        const numberHeader = document.createElement('th');
+        numberHeader.innerHTML = 'number';
+        tabHeaders.appendChild(numberHeader);
+
+        const resIdHeader = document.createElement('th');
+        resIdHeader.innerHTML = 'Resolution ID';
+        tabHeaders.appendChild(resIdHeader);
+
+        const contentHeader = document.createElement('th');
+        contentHeader.innerHTML = 'Content';
+        tabHeaders.appendChild(contentHeader);
+
+        const specHeader = document.createElement('th');
+        specHeader.innerHTML = 'Speciality';
+        tabHeaders.appendChild(specHeader);
+
+        const patientNameHeader = document.createElement('th');
+        patientNameHeader.innerHTML = 'Patient name';
+        tabHeaders.appendChild(patientNameHeader);
+
+        const doctorNameHeader = document.createElement('th');
+        doctorNameHeader.innerHTML = 'Doctor name';
+        tabHeaders.appendChild(doctorNameHeader);
+
+        const timeHeader = document.createElement('th');
+        timeHeader.innerHTML = 'Created At';
+        tabHeaders.appendChild(timeHeader);
+
+        resTable.appendChild(tabHeaders);
+
+        foundResolution.forEach((elem, i) => {
+            const tabRow = document.createElement('tr');
+
+            const number = document.createElement('td');
+            number.innerHTML = i;
+            tabRow.appendChild(number);
+
+            const resID = document.createElement('td');
+            resID.innerHTML = elem.id;
+            tabRow.appendChild(resID);
+
+            const content = document.createElement('td');
+            content.innerHTML = elem.content;
+            tabRow.appendChild(content);
+
+            const spec = document.createElement('td');
+            spec.innerHTML = elem.speciality;
+            tabRow.appendChild(spec);
+
+            const patientName = document.createElement('td');
+            patientName.innerHTML = elem.patient.name;
+            tabRow.appendChild(patientName);
+
+            const docName = document.createElement('td');
+            docName.innerHTML = elem.doctor.name;
+            tabRow.appendChild(docName);
+
+            const createdAt = document.createElement('td');
+            createdAt.innerHTML = new Date(elem.createdAt);
+            tabRow.appendChild(createdAt);
+
+            resTable.appendChild(tabRow);
+        });
+
+        doctorFieldWithFoundedResolution.appendChild(resTable);
     }
 
     deleteResolutionButton.disabled = false;
 }
 
 async function deleteResolution() {
-    const resolutionContent = doctorFieldWithFoundedResolution.innerHTML;
+    const resolutionId = delInput.value;
+    console.log(resolutionId);
 
-    if (resolutionContent && resolutionContent !== 'There is no such patient') {
-        const response = await fetch(`resolutions/${foundedPatient}`, {
-            method: 'DELETE',
-        });
-        const res = await response.text();
-        console.log(res);
+    const response = await fetch(`resolutions/${resolutionId}`, {
+        method: 'DELETE',
+    });
+    const res = await response.text();
+    console.log(res);
 
-        dischargeInput(doctorFieldWithFoundedResolution, deleteResolutionButton);
-        dischargeInput(searchResolutionDoctorInput, showResolutionToDoctorButton);
-    }
+    dischargeInput(doctorFieldWithFoundedResolution, deleteResolutionButton);
+    dischargeInput(searchResolutionDoctorInput, showResolutionToDoctorButton);
 }

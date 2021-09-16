@@ -9,6 +9,7 @@ const addResolutionSchema = {
         newResolutionContent: { type: 'string' },
         currentPatient: { type: 'object' },
         ttl: { type: 'boolean' },
+        spec: { type: 'string' },
     },
     required: ['newResolutionContent', 'currentPatient', 'ttl'],
     additionalProperties: false,

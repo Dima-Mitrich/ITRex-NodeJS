@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import patientUserService from '../../users/services/PatientUserService.js';
-import doctorUserService from '../../users/services/DoctorUserService.js';
+import userService from '../../users/services/UserService.js';
 import jwtService from '../services/JwtService.js';
 import resultHandler from '../../helpers/resultHandler.js';
 import calculateAge from '../../helpers/calculateAge.js';
@@ -12,9 +11,8 @@ import {
 } from '../../../constants.js';
 
 class AuthController {
-    constructor(patientUserService, doctorUserService, jwtService) {
-        this.patientUserService = patientUserService;
-        this.doctorUserService = doctorUserService;
+    constructor(userService, jwtService) {
+        this.userService = userService;
         this.jwtService = jwtService;
     }
 
@@ -58,13 +56,9 @@ class AuthController {
     }
 
     async createNewUser(role, password, email) {
-        let user;
-        if (role === USER_TYPE.PATIENT) {
-            user = await this.patientUserService.createNewUser({ password, userID: uuidv4(), email });
-        }
-        if (role === USER_TYPE.DOCTOR) {
-            user = await this.doctorUserService.createNewUser({ password, userID: uuidv4(), email });
-        }
+        const user = await this.userService.createNewUser({
+            password, userID: uuidv4(), email, role,
+        });
 
         return resultHandler(user, STATUSES.Created);
     }
@@ -85,14 +79,7 @@ class AuthController {
 
         const userID = candidate.value.user_id;
 
-        let isPasswordRight;
-
-        if (role === USER_TYPE.PATIENT) {
-            isPasswordRight = await this.patientUserService.isPasswordMatches(userID, password);
-        }
-        if (role === USER_TYPE.DOCTOR) {
-            isPasswordRight = await this.doctorUserService.isPasswordMatches(userID, password);
-        }
+        const isPasswordRight = await this.userService.isPasswordMatches(userID, password);
 
         if (!isPasswordRight) return resultHandler(new Error(WRONG_PASSWORD_MESSAGE));
 
@@ -113,5 +100,5 @@ class AuthController {
     }
 }
 
-const authController = new AuthController(patientUserService, doctorUserService, jwtService);
+const authController = new AuthController(userService, jwtService);
 export default authController;

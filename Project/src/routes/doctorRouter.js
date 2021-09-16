@@ -45,4 +45,10 @@ doctorRouter.get('/doctor-data', async (req, res) => {
         : res.status(STATUSES.BadRequest).json(doctorSpecs.value);
 });
 
+doctorRouter.get('/spec-list', async (req, res) => {
+    const result = await doctorController.getSpecList();
+
+    res.status(result.status).json(result.value);
+});
+
 export default doctorRouter;

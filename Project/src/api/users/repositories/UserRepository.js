@@ -1,4 +1,4 @@
-export default class DoctorUserRepository {
+export default class UserRepository {
     constructor(model) {
         this.model = model;
     }
@@ -8,6 +8,7 @@ export default class DoctorUserRepository {
             user_id: user.userID,
             password: user.password,
             login: user.email,
+            role: user.role,
         });
 
         return user;

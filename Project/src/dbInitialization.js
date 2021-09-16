@@ -2,8 +2,7 @@ import pkg from 'sequelize';
 import config from '../config.js';
 import patientDefine from './api/models/PatientModel.js';
 import resolutionDefine from './api/models/ResolutionModel.js';
-import patientUserDefine from './api/models/UserModel.js';
-import doctorUserDefine from './api/models/doctorUserModel.js';
+import userDefine from './api/models/UserModel.js';
 import doctorDefine from './api/models/DoctorModel.js';
 import specializationDefine from './api/models/SpecializationModel.js';
 import { PORTS } from './constants.js';
@@ -20,20 +19,25 @@ export default function dbInit() {
 
     resolutionDefine(sequelize);
     patientDefine(sequelize);
-    patientUserDefine(sequelize);
+    userDefine(sequelize);
     doctorDefine(sequelize);
-    doctorUserDefine(sequelize);
     specializationDefine(sequelize);
 
+    sequelize.models.patient.hasMany(sequelize.models.resolution);
+
+    sequelize.models.doctor.hasMany(sequelize.models.resolution);
+
     sequelize.models.resolution.belongsTo(sequelize.models.patient, {
-        foreignKey: {
-            name: 'patientID',
-            type: DataTypes.UUID,
-            allowNull: false,
-        },
+        as: 'patient',
     });
 
-    sequelize.models.patient.belongsTo(sequelize.models.patientUser, {
+    sequelize.models.resolution.belongsTo(sequelize.models.doctor, {
+        as: 'doctor',
+    });
+
+
+
+    sequelize.models.patient.belongsTo(sequelize.models.user, {
         foreignKey: {
             name: 'user_id',
             type: DataTypes.UUID,
@@ -41,7 +45,7 @@ export default function dbInit() {
         },
     });
 
-    sequelize.models.doctor.belongsTo(sequelize.models.doctorUser, {
+    sequelize.models.doctor.belongsTo(sequelize.models.user, {
         foreignKey: {
             name: 'user_id',
             type: DataTypes.UUID,
@@ -51,10 +55,6 @@ export default function dbInit() {
 
     sequelize.models.doctor.belongsToMany(sequelize.models.specialization, { through: 'doctorSpecialization' });
     sequelize.models.specialization.belongsToMany(sequelize.models.doctor, { through: 'doctorSpecialization' });
-    sequelize.models.doctor.hasMany(sequelize.models.doctorSpecialization);
-    sequelize.models.doctorSpecialization.belongsTo(sequelize.models.doctor);
-    sequelize.models.specialization.hasMany(sequelize.models.doctorSpecialization);
-    sequelize.models.doctorSpecialization.belongsTo(sequelize.models.specialization);
 
     sequelize.sync({ force: true });
 

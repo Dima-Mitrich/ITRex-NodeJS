@@ -1,12 +1,29 @@
 export default class MySQLSpecialization {
-    constructor(specializationModel) {
+    constructor(doctorModel, specializationModel) {
         this.specializationModel = specializationModel;
+        this.doctorModel = doctorModel;
     }
 
     async addSpec(specialization) {
         const result = await this.specializationModel.create({
             specialization,
         });
+        return result;
+    }
+
+    async getSpecByUserId(userID) {
+        const resultData = await this.doctorModel.findOne({
+            where: {
+                user_id: userID,
+            },
+            include: [{
+                attributes: ['specialization'],
+                model: this.specializationModel,
+            }],
+
+        });
+        const result = resultData.specializations.map((elem) => elem.specialization);
+
         return result;
     }
 

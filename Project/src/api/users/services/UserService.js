@@ -1,8 +1,10 @@
 import bcrypt from 'bcrypt';
-import { doctorUserRepository } from '../../repositoryCreater.js';
+import { userRepository } from '../../repositoryCreater.js';
 import { NOT_FOUND_MESSAGE } from '../../../constants.js';
 
-class DoctorUserService {
+
+
+class UserService {
     constructor(repository) {
         this.repository = repository;
     }
@@ -51,5 +53,5 @@ class DoctorUserService {
     }
 }
 
-const doctorUserService = new DoctorUserService(doctorUserRepository);
-export default doctorUserService;
+const userService = new UserService(userRepository);
+export default userService;

@@ -14,7 +14,7 @@ export class QueueService {
         } catch (err) {
             console.log(err);
 
-            return err;
+            return err;//при отсутствии пациента в очереди  на фронте не появл статус 409 и ошибка
         }
     }
 

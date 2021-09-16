@@ -1,12 +1,14 @@
 import queueService from '../../queue/services/QueueService.js';
 import doctorStorageService from '../services/DoctorStorageServise.js';
 import resultHandler from '../../helpers/resultHandler.js';
+import specStorageService from '../../specialization/services/SpecStorageService.js';
 import { STATUSES, NAME_IS_EXIST, EMAIL_IS_EXIST } from '../../../constants.js';
 
 class DoctorController {
-    constructor(doctorStorageService, queueService) {
+    constructor(doctorStorageService, queueService, specStorageService) {
         this.doctorStorageService = doctorStorageService;
         this.queueService = queueService;
+        this.specStorageService = specStorageService;
     }
 
     async addDoctor(doctor) {
@@ -22,7 +24,7 @@ class DoctorController {
     }
 
     async getSpecList() {
-        const result = await this.doctorStorageService.getSpecList();
+        const result = await this.specStorageService.getSpecList();
 
         return resultHandler(result, STATUSES.OK);
     }
@@ -38,7 +40,7 @@ class DoctorController {
     }
 
     async getSpecByUserId(userID) {
-        const specs = await this.doctorStorageService.getSpecByUserId(userID);
+        const specs = await this.specStorageService.getSpecByUserId(userID);
 
         return resultHandler(specs, STATUSES.OK);
     }
@@ -55,5 +57,5 @@ class DoctorController {
     }
 }
 
-const doctorController = new DoctorController(doctorStorageService, queueService);
+const doctorController = new DoctorController(doctorStorageService, queueService, specStorageService);
 export default doctorController;

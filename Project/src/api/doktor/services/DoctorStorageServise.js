@@ -12,15 +12,6 @@ export class DoctorStorageService {
         try {
             const result = await this.doctorRepository.push(doctor);
 
-            const doctorId = result.dataValues.id;
-            const { specialization } = doctor;
-
-            for (const elem of specialization) {
-                const spec = await specializationRepository.getSpecByName(elem);
-                const specId = spec.dataValues.id;
-                await this.specDoctorRepository.addLinc(doctorId, specId);
-            }
-
             return result;
         } catch (err) {
             console.log(err);
@@ -41,17 +32,17 @@ export class DoctorStorageService {
         }
     }
 
-    async getSpecializations() {
-        try {
-            const result = await this.specializationRepository.getAllSpec();
-
-            return result;
-        } catch (err) {
-            console.log(err);
-
-            return err;
-        }
-    }
+    // async getSpecializations() {
+    //     try {
+    //         const result = await this.specializationRepository.getAllSpec();
+    //
+    //         return result;
+    //     } catch (err) {
+    //         console.log(err);
+    //
+    //         return err;
+    //     }
+    // }
 
     async getDoctor(name, id, email, userID) {
         try {
@@ -78,42 +69,39 @@ export class DoctorStorageService {
         }
     }
 
-    async getSpecByUserId(userID) {
-        try {
-            const result = await this.doctorRepository.getSpecByUserId(userID);
-            const specList = [];
-            for (const elem of result.specializations) {
-                specList.push(elem.dataValues.specialization.dataValues.specialization);
-            }
-            if (specList) {
-                return specList;
-            } else {
-                throw new Error(NOT_FOUND_MESSAGE);
-            }
-        } catch (err) {
-            console.log(err);
-            return err;
-        }
-    }
+    // async getSpecByUserId(userID) {
+    //     try {
+    //         const result = await this.doctorRepository.getSpecByUserId(userID);
+    //
+    //         if (result) {
+    //             return result;
+    //         } else {
+    //             throw new Error(NOT_FOUND_MESSAGE);
+    //         }
+    //     } catch (err) {
+    //         console.log(err);
+    //         return err;
+    //     }
+    // }
 
-    async getSpecList() {
-        try {
-            const result = await specializationRepository.getAllSpec();
-
-            const specData = [];
-            result.forEach((elem, i) => {
-                specData[i] = elem.dataValues.specialization;
-            });
-
-            if (result) {
-                return specData;
-            } else {
-                throw new Error(NOT_FOUND_MESSAGE);
-            }
-        } catch (err) {
-            return err;
-        }
-    }
+    // async getSpecList() {
+    //     try {
+    //         const result = await specializationRepository.getAllSpec();
+    //
+    //         const specData = [];
+    //         result.forEach((elem, i) => {
+    //             specData[i] = elem.dataValues.specialization;
+    //         });
+    //
+    //         if (result) {
+    //             return specData;
+    //         } else {
+    //             throw new Error(NOT_FOUND_MESSAGE);
+    //         }
+    //     } catch (err) {
+    //         return err;
+    //     }
+    //}
 }
 
 const doctorStorageService = new DoctorStorageService(doctorRepository, specializationRepository, specDoctorRepository);

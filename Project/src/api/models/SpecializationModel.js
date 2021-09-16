@@ -20,7 +20,7 @@ export default async function specializationDefine(sequelize) {
     });
 
     try {
-        await sequelize.models.specialization.sync({ force: true });
+        //await sequelize.models.specialization.sync({ force: true });
     } catch (err) {
         console.log(err);
     }

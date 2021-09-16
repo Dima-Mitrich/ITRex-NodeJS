@@ -10,6 +10,13 @@ export default async function doctorDefine(sequelize) {
             primaryKey: true,
             allowNull: false,
             unique: true,
+            references: {
+                model: {
+                    tableName: 'users',
+                    schema: 'schema'
+                },
+                key: 'id'
+            }
         },
         name: {
             type: DataTypes.STRING,
@@ -38,7 +45,7 @@ export default async function doctorDefine(sequelize) {
     });
 
     try {
-        await sequelize.models.doctor.sync({ force: true });
+        //await sequelize.models.doctor.sync({ force: true });
     } catch (err) {
         console.log(err);
     }

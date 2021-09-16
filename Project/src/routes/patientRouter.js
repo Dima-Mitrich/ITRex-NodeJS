@@ -2,7 +2,6 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import patientController from '../api/patient/controller/PatientController.js';
-import doctorController from '../api/doktor/controller/DoctorController.js';
 import authController from '../api/auth/controller/AuthController.js';
 import { USER_TYPE } from '../constants.js';
 
@@ -47,10 +46,6 @@ patientRouter.post('/', async (req, res, next) => {
     res.status(result.status).json(result.value);
 });
 
-patientRouter.get('/spec-list', async (req, res) => {
-    const result = await doctorController.getSpecList();
 
-    res.status(result.status).json(result.value);
-});
 
 export default patientRouter;

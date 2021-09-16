@@ -1,9 +1,8 @@
 export default class MySQLDoctor {
-    constructor(doctorModel, specializationModel, doctorSpecialization, doctorUser) {
+    constructor(doctorModel, specializationModel, userModel) {
         this.doctorModel = doctorModel;
         this.specializationModel = specializationModel;
-        this.doctorSpecialization = doctorSpecialization;
-        this.doctorUser = doctorUser;
+        this.userModel = userModel;
     }
 
     async push(doctor) {
@@ -17,14 +16,18 @@ export default class MySQLDoctor {
             experience: doctor.experience,
             user_id: doctor.userID,
         });
+        const { specialization } = doctor;
+        for (const elem of specialization) {
+            const spec = await this.specializationModel.findOne({
+                where: {
+                    specialization: elem,
+                },
+
+            });
+            result.addSpecialization(spec);
+        }
 
         return result;
-    }
-
-    async addSpec(specialization) {
-        await this.specializationModel.create({
-            specialization,
-        });
     }
 
     async getByName(name) {
@@ -38,7 +41,7 @@ export default class MySQLDoctor {
     }
 
     async getById(id) {
-        const result = await this.doctorSpecialization.findAll({
+        const result = await this.doctorModel.findOne({
             where: {
                 doctorId: id,
             },
@@ -49,30 +52,13 @@ export default class MySQLDoctor {
     async getByUserId(userID) {
         const result = await this.doctorModel.findOne({
             include: {
-                model: this.doctorUser,
+                model: this.userModel,
                 where: {
                     user_id: userID,
                 },
             },
         });
 
-        return result;
-    }
-
-    async getSpecByUserId(userID) {
-        const result = await this.doctorModel.findOne({
-            include: [{
-                model: this.doctorUser,
-                where: {
-                    user_id: userID,
-                },
-            },
-            {
-                model: this.doctorSpecialization,
-                include: { model: this.specializationModel },
-            }],
-
-        });
         return result;
     }
 
@@ -81,20 +67,6 @@ export default class MySQLDoctor {
             where: {
                 email,
             },
-        });
-
-        return result;
-    }
-
-    async getBySpecializationID(specializationID) {
-        const result = await this.doctorModel.findOne({
-            include: {
-                model: this.docSpecModel,
-                where: {
-                    specializationid: specializationID,
-                },
-            },
-
         });
 
         return result;

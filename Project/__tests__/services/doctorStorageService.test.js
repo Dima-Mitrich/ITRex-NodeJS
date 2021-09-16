@@ -1,16 +1,15 @@
 import SequelizeMock from 'sequelize-mock';
 import doctorStorageService from '../../src/api/doktor/services/DoctorStorageServise.js';
 import MySQLDoctor from '../../src/api/doktor/repositories/MySQLDoctor.js';
-import MySQLSpecialization from '../../src/api/doktor/repositories/MySQLSpecialization.js';
+import MySQLSpecialization from '../../src/api/specialization/repositories/MySQLSpecialization.js';
 import MySQLSpecDoctor from '../../src/api/doktor/repositories/MySQLSpecDoctor.js';
 
+const doctorModel = new SequelizeMock();
+const specializationModel = new SequelizeMock();
+const doctorSpecialization = new SequelizeMock();
+const doctorUser = new SequelizeMock();
 
-
-doctorStorageService.doctorRepository = new MySQLDoctor(
-  new SequelizeMock(),
-  new SequelizeMock(),
-  new SequelizeMock(),
-  new SequelizeMock());
+doctorStorageService.doctorRepository = new MySQLDoctor(doctorModel, specializationModel, doctorSpecialization, doctorUser);
 doctorStorageService.specializationRepository = new MySQLSpecialization(new SequelizeMock());
 doctorStorageService.specDoctorRepository = new MySQLSpecDoctor(new SequelizeMock());
 
@@ -33,7 +32,7 @@ const drData = {
 describe('doctor service have to', () => {
 
   test('add doctor', async () => {
-    doctorRepository.push = jest.fn(() =>({dataValues:{id:'111'}}));
+    doctorRepository.push = jest.fn(( ) =>({dataValues:{id:'111'}}));
     specializationRepository.getSpecByName = jest.fn(() =>({dataValues: {id: '222'}}));
 
 
