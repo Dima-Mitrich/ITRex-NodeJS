@@ -14,7 +14,6 @@ loginRouter.get('/', (req, res) => {
 });
 
 loginRouter.post('/', (req, res, next) => {
-    console.log(req.body);
     validateUserLogin(req.body)
         ? next()
         : res.status(STATUSES.BadRequest).json(validateUserLogin.errors);

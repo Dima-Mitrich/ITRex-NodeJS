@@ -3,7 +3,8 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import patientController from '../api/patient/controller/PatientController.js';
 import authController from '../api/auth/controller/AuthController.js';
-import { USER_TYPE } from '../constants.js';
+import { STATUSES, USER_TYPE } from '../constants.js';
+import { validateDoctorSpec } from '../api/helpers/validate.js';
 
 const patientRouter = express.Router();
 const __dirname = path.resolve();
@@ -29,7 +30,14 @@ patientRouter.get('/next', async (req, res) => {
     res.status(result.status).json(result.value);
 });
 
-patientRouter.post('/', async (req, res, next) => {
+patientRouter.post('/', (req, res, next) => {
+
+    console.log(validateDoctorSpec(req.body));
+    validateDoctorSpec(req.body)
+        ? next()
+        : res.status(STATUSES.BadRequest).json(validateDoctorSpec.errors);
+}, async (req, res, next) => {
+    console.log(req.body);
     const userID = await authController.checkToken(req.cookies.jwtPatient);
     const { spec } = req.body;
 
@@ -45,7 +53,5 @@ patientRouter.post('/', async (req, res, next) => {
 
     res.status(result.status).json(result.value);
 });
-
-
 
 export default patientRouter;
