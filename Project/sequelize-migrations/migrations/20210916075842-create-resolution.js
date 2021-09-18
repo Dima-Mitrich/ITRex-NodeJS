@@ -27,6 +27,20 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.DATE,
             },
+            doctorId: {
+                type: Sequelize.UUID,
+                references: {
+                    model: 'doctors',
+                    key: 'id',
+                },
+            },
+            patientId: {
+                type: Sequelize.UUID,
+                references: {
+                    model: 'patients',
+                    key: 'id',
+                },
+            },
         });
     },
     down: async (queryInterface, Sequelize) => {

@@ -56,7 +56,7 @@ export default function dbInit() {
     sequelize.models.doctor.belongsToMany(sequelize.models.specialization, { through: 'doctorSpecialization' });
     sequelize.models.specialization.belongsToMany(sequelize.models.doctor, { through: 'doctorSpecialization' });
 
-    sequelize.sync({ force: true });
+    sequelize.sync({ alter: true });
 
     return sequelize;
 }

@@ -15,6 +15,7 @@ function repositoryCreater(mode) {
             queueRepository: new RedisQueue(),
             userRepository: new UserRepository(),
             doctorRepository: new MySQLDoctor(),
+            specializationRepository: new MySQLSpecialization(),
         };
     }
 

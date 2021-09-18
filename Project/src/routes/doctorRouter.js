@@ -1,7 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import { doctorData, specData } from '../api/helpers/doctorsData.js';
 import { STATUSES, USER_TYPE } from '../constants.js';
 
 import doctorController from '../api/doktor/controller/DoctorController.js';
@@ -21,19 +20,6 @@ doctorRouter.get('/', async (req, res) => {
     } else {
         res.redirect('/login');
     }
-});
-
-doctorRouter.get('/add-doctors', async (req, res) => {
-    for (const elem of specData) {
-        await doctorController.addSpec(elem);
-    }
-
-    for (const elem of doctorData) {
-        elem.role = USER_TYPE.DOCTOR;
-        await authController.signUpNewUser(elem);
-    }
-
-    res.status(200).send('ok');
 });
 
 doctorRouter.get('/doctor-data', async (req, res) => {

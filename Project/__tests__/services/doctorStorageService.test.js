@@ -1,21 +1,8 @@
-import SequelizeMock from 'sequelize-mock';
 import doctorStorageService from '../../src/api/doktor/services/DoctorStorageServise.js';
-import MySQLDoctor from '../../src/api/doktor/repositories/MySQLDoctor.js';
-import MySQLSpecialization from '../../src/api/specialization/repositories/MySQLSpecialization.js';
-import MySQLSpecDoctor from '../../src/api/doktor/repositories/MySQLSpecDoctor.js';
-
-const doctorModel = new SequelizeMock();
-const specializationModel = new SequelizeMock();
-const doctorSpecialization = new SequelizeMock();
-const doctorUser = new SequelizeMock();
-
-doctorStorageService.doctorRepository = new MySQLDoctor(doctorModel, specializationModel, doctorSpecialization, doctorUser);
-doctorStorageService.specializationRepository = new MySQLSpecialization(new SequelizeMock());
-doctorStorageService.specDoctorRepository = new MySQLSpecDoctor(new SequelizeMock());
+import {NOT_FOUND_MESSAGE} from '../../src/constants';
 
 const doctorRepository = doctorStorageService.doctorRepository;
-const specializationRepository = doctorStorageService.specializationRepository;
-const specDoctorRepository = doctorStorageService.specDoctorRepository
+
 
 const drData = {
   id:'222',
@@ -33,52 +20,58 @@ describe('doctor service have to', () => {
 
   test('add doctor', async () => {
     doctorRepository.push = jest.fn(( ) =>({dataValues:{id:'111'}}));
-    specializationRepository.getSpecByName = jest.fn(() =>({dataValues: {id: '222'}}));
-
-
     const res = await doctorStorageService.addDoctor(drData);
 
-
-    expect(res).toEqual(drData);
-    expect(specializationRepository.getSpecByName).toBeCalled();
-    // expect(res.email).toBe('email');
-    // expect(res.password).not.toBe('1234');
-    // expect(repository.addNewUser).toBeCalled();
+    expect(doctorRepository.push).toBeCalled();
+    expect(res).toEqual({dataValues:{id:'111'}});
   });
 
-  test('add specialization', async () => {
-    specializationRepository.addSpec = jest.fn(() =>('aaa'));
 
-
-    const res = await doctorStorageService.addSpec('aaa');
-
-    expect(res).toEqual('aaa');
-    expect(specializationRepository.addSpec).toBeCalled();
-  });
-
-  test('get specialization', async () => {
-    specializationRepository.getAllSpec = jest.fn(() =>('aaa'));
-
-    const res = await doctorStorageService.getSpecializations();
-    expect(res).toEqual('aaa');
-    expect(specializationRepository.getAllSpec).toBeCalled();
-  });
 
   test('get doctor by id', async () => {
-    doctorRepository.getById = jest.fn(() =>('aaa'));
+    doctorRepository.getById = jest.fn(( ) =>('aaa'));
 
-    const res = await doctorStorageService.getDoctor({ name: null, id: 4 });
+    const res = await doctorStorageService.getDoctor( null,  4 ,null, null);
     expect(res).toEqual('aaa');
     expect(doctorRepository.getById).toBeCalled();
   });
 
-  test('get specialization by id', async () => {
-    doctorRepository.getSpecByUserId = jest.fn(() =>({specializations: ['aaa','bbb']}));
+  test('get doctor by name', async () => {
+    doctorRepository.getByName = jest.fn(( ) =>('aaa'));
 
-    const res = await doctorStorageService.getSpecByUserId('222');
+    const res = await doctorStorageService.getDoctor( 'www',  null,null, null);
     expect(res).toEqual('aaa');
-    expect(doctorRepository.getById).toBeCalled();
+    expect(doctorRepository.getByName).toBeCalled();
   });
+
+  test('get doctor by email', async () => {
+    doctorRepository.getByEmail = jest.fn(( ) =>('aaa'));
+
+    const res = await doctorStorageService.getDoctor( null,  null,'a@a', null);
+    expect(res).toEqual('aaa');
+    expect(doctorRepository.getByEmail).toBeCalled();
+  });
+
+  test('get doctor by userId', async () => {
+    doctorRepository.getByUserId = jest.fn(( ) =>('aaa'));
+
+    const res = await doctorStorageService.getDoctor( null,  null,null, '222');
+    expect(res).toEqual('aaa');
+    expect(doctorRepository.getByUserId).toBeCalled();
+  });
+
+
+  test('get doctor result false', async () => {
+    doctorRepository.getByUserId = jest.fn(( ) =>false);
+
+    const res = await doctorStorageService.getDoctor( null,  null,null, '222');
+
+    expect(res).toBeInstanceOf(Error)
+    expect(doctorRepository.getByUserId).toBeCalled();
+    expect(res.message).toBe(NOT_FOUND_MESSAGE);
+  });
+
+
 
 
 

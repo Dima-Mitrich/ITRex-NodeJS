@@ -3,28 +3,29 @@ import doctorController from '../../src/api/doktor/controller/DoctorController.j
 import authController from '../../src/api/auth/controller/AuthController.js';
 import { STATUSES, EMAIL_IS_EXIST, WRONG_PASSWORD_MESSAGE, WRONG_EMAIL_MESSAGE } from '../../src/constants.js';
 
-const { patientUserService, doctorUserService,jwtService } = authController;
+
+const {userService,jwtService } = authController;
 
 describe('auth controller have to', () => {
 
-    test('create new user', async () => {
-        patientUserService.createNewUser = jest.fn((pass) => pass);
+    test('create new user(patient)', async () => {
+        userService.createNewUser = jest.fn((pass) => pass);
 
         const res = await authController.createNewUser('patient','111','a@a');
 
         expect(res.status).toBe(STATUSES.Created);
         expect(res.value.password).toBe('111');
-        expect(patientUserService.createNewUser).toBeCalled();
+        expect(userService.createNewUser).toBeCalled();
     });
 
-    test('create new user', async () => {
-        doctorUserService.createNewUser = jest.fn((pass) => pass);
+    test('create new user(doctor)', async () => {
+        userService.createNewUser = jest.fn((pass) => pass);
 
         const res = await authController.createNewUser('doctor','111','a@a');
 
         expect(res.status).toBe(STATUSES.Created);
         expect(res.value.password).toBe('111');
-        expect(doctorUserService.createNewUser).toBeCalled();
+        expect(userService.createNewUser).toBeCalled();
     });
 
     test('sign up new patient', async () => {
@@ -68,7 +69,7 @@ describe('auth controller have to', () => {
 
     test('sign in patient', async () => {
         patientController.getPatient = jest.fn(() => ({ status: 200, value: { userID: '1' } }));
-        patientUserService.isPasswordMatches = jest.fn(() => true);
+        userService.isPasswordMatches = jest.fn(() => true);
         jwtService.createJwtToken = jest.fn(() => 'token');
 
         const res = await authController.signInUser({ userID: '1' ,role: 'patient'});
@@ -76,13 +77,13 @@ describe('auth controller have to', () => {
         expect(res.status).toBe(200);
         expect(res.value).toBe('token');
         expect(patientController.getPatient).toBeCalled();
-        expect(patientUserService.isPasswordMatches).toBeCalled();
+        expect(userService.isPasswordMatches).toBeCalled();
         expect(jwtService.createJwtToken).toBeCalled();
     });
 
     test('sign in doctor', async () => {
         doctorController.getDoctor = jest.fn(() => ({ status: 200, value: { userID: '1' } }));
-        doctorUserService.isPasswordMatches = jest.fn(() => true);
+        userService.isPasswordMatches = jest.fn(() => true);
         jwtService.createJwtToken = jest.fn(() => 'token');
 
         const res = await authController.signInUser({ userID: '1' ,role: 'doctor'});
@@ -90,7 +91,7 @@ describe('auth controller have to', () => {
         expect(res.status).toBe(200);
         expect(res.value).toBe('token');
         expect(doctorController.getDoctor).toBeCalled();
-        expect(doctorUserService.isPasswordMatches).toBeCalled();
+        expect(userService.isPasswordMatches).toBeCalled();
         expect(jwtService.createJwtToken).toBeCalled();
     });
 
@@ -116,7 +117,7 @@ describe('auth controller have to', () => {
 
     test('failed with sign-in user with wrong password', async () => {
         patientController.getPatient = jest.fn(() => ({ status: 200, value: { userID: '1' } }));
-        patientUserService.isPasswordMatches = jest.fn(() => false);
+        userService.isPasswordMatches = jest.fn(() => false);
         jwtService.createJwtToken = jest.fn(() => 'token');
 
         const res = await authController.signInUser({ userID: '1' ,role:'patient'});
@@ -125,13 +126,13 @@ describe('auth controller have to', () => {
         expect(res.value.message).toBe(WRONG_PASSWORD_MESSAGE);
         expect(res.status).toBe(STATUSES.Unauthorized);
         expect(patientController.getPatient).toBeCalled();
-        expect(patientUserService.isPasswordMatches).toBeCalled();
+        expect(userService.isPasswordMatches).toBeCalled();
         expect(jwtService.createJwtToken).toBeCalledTimes(0);
     });
 
     test('failed with sign-in user(doctor) with wrong password', async () => {
         doctorController.getDoctor = jest.fn(() => ({ status: 200, value: { userID: '1' } }));
-        doctorUserService.isPasswordMatches = jest.fn(() => false);
+        userService.isPasswordMatches = jest.fn(() => false);
         jwtService.createJwtToken = jest.fn(() => 'token');
 
         const res = await authController.signInUser({ userID: '1' ,role:'doctor'});
@@ -140,13 +141,13 @@ describe('auth controller have to', () => {
         expect(res.value.message).toBe(WRONG_PASSWORD_MESSAGE);
         expect(res.status).toBe(STATUSES.Unauthorized);
         expect(doctorController.getDoctor).toBeCalled();
-        expect(doctorUserService.isPasswordMatches).toBeCalled();
+        expect(userService.isPasswordMatches).toBeCalled();
         expect(jwtService.createJwtToken).toBeCalledTimes(0);
     });
 
     test('failed with sign-in user with wrong email', async () => {
         patientController.getPatient = jest.fn(() => ({ status: 404, value: new Error('not-found') }));
-        patientUserService.isPasswordMatches = jest.fn(() => false);
+        userService.isPasswordMatches = jest.fn(() => false);
         jwtService.createJwtToken = jest.fn(() => 'token');
 
         const res = await authController.signInUser({ userID: '1' ,role: 'patient'});
@@ -155,13 +156,13 @@ describe('auth controller have to', () => {
         expect(res.value.message).toBe(WRONG_EMAIL_MESSAGE);
         expect(res.status).toBe(STATUSES.Unauthorized);
         expect(patientController.getPatient).toBeCalled();
-        expect(patientUserService.isPasswordMatches).toBeCalledTimes(0);
+        expect(userService.isPasswordMatches).toBeCalledTimes(0);
         expect(jwtService.createJwtToken).toBeCalledTimes(0);
     });
 
     test('failed with sign-in user(doctor) with wrong email', async () => {
         doctorController.getDoctor = jest.fn(() => ({ status: 404, value: new Error('not-found') }));
-        doctorUserService.isPasswordMatches = jest.fn(() => false);
+        userService.isPasswordMatches = jest.fn(() => false);
         jwtService.createJwtToken = jest.fn(() => 'token');
 
         const res = await authController.signInUser({ userID: '1' ,role: 'doctor'});
@@ -170,7 +171,7 @@ describe('auth controller have to', () => {
         expect(res.value.message).toBe(WRONG_EMAIL_MESSAGE);
         expect(res.status).toBe(STATUSES.Unauthorized);
         expect(doctorController.getDoctor).toBeCalled();
-        expect(doctorUserService.isPasswordMatches).toBeCalledTimes(0);
+        expect(userService.isPasswordMatches).toBeCalledTimes(0);
         expect(jwtService.createJwtToken).toBeCalledTimes(0);
     });
 

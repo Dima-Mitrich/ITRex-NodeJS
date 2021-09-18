@@ -37,9 +37,10 @@ class PatientController {
         if (patient.status !== STATUSES.NotFound) {
             const isEmpty = await this.isEmpty(spec);
             patient.value.last = isEmpty;
+            return patient;
         }
 
-        return resultHandler(patient, STATUSES.OK);
+        return patient;
     }
 
     async isExist(patient) {

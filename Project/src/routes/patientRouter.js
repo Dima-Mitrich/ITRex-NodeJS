@@ -26,8 +26,10 @@ patientRouter.get('/', async (req, res) => {
 
 patientRouter.get('/next', async (req, res) => {
     const result = await patientController.shiftPatient(req.query.spec);
+    console.log('?>>>>>>>>>>>>>>>>>>>>>>>>>....');
+    console.log(result);
 
-    res.status(result.status).json(result.value);
+    res.status(result.status).json(result);
 });
 
 patientRouter.post('/', (req, res, next) => {

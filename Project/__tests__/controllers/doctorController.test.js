@@ -1,7 +1,7 @@
 import doctorController from '../../src/api/doktor/controller/DoctorController.js';
 import { STATUSES, EMAIL_IS_EXIST } from '../../src/constants.js';
 
-const {doctorStorageService, queueService} = doctorController
+const {doctorStorageService, specStorageService} = doctorController
 
 const drData = {
   name: 'dimoz',
@@ -57,40 +57,40 @@ describe('doctor controller have to', () => {
 
   test('get specializations list ', async () => {
 
-    doctorStorageService.getSpecList = jest.fn(() => (['sss','aaa','dentist']));
+    specStorageService.getSpecList = jest.fn(() => (['sss','aaa','dentist']));
     const res = await doctorController.getSpecList();
 
-    expect(doctorStorageService.getSpecList).toBeCalled();
+    expect(specStorageService.getSpecList).toBeCalled();
     expect(res.status).toBe(STATUSES.OK);
     expect(res.value).toEqual(['sss','aaa','dentist']);
   });
 
   test('get specializations list(db fall) ', async () => {
 
-    doctorStorageService.getSpecList = jest.fn(() => ((new Error('not found'))));
+    specStorageService.getSpecList = jest.fn(() => ((new Error('not found'))));
     const res = await doctorController.getSpecList();
 
-    expect(doctorStorageService.getSpecList).toBeCalled();
+    expect(specStorageService.getSpecList).toBeCalled();
     expect(res.status).toBe(STATUSES.NotFound);
     expect(res.value.message).toBe('not found');
   });
 
   test('get specializations by user id', async () => {
 
-    doctorStorageService.getSpecByUserId = jest.fn(() => (['sss','aaa','dentist']));
+    specStorageService.getSpecByUserId = jest.fn(() => (['sss','aaa','dentist']));
     const res = await doctorController.getSpecByUserId('2a2');
 
-    expect(doctorStorageService.getSpecByUserId).toBeCalled();
+    expect(specStorageService.getSpecByUserId).toBeCalled();
     expect(res.status).toBe(STATUSES.OK);
     expect(res.value).toEqual(['sss','aaa','dentist']);
   });
 
   test('get specializations by user id(db fall)', async () => {
 
-    doctorStorageService.getSpecByUserId = jest.fn(() => ((new Error('not found'))));
+    specStorageService.getSpecByUserId = jest.fn(() => ((new Error('not found'))));
     const res = await doctorController.getSpecByUserId('2a2');
 
-    expect(doctorStorageService.getSpecByUserId).toBeCalled();
+    expect(specStorageService.getSpecByUserId).toBeCalled();
     expect(res.status).toBe(STATUSES.NotFound);
     expect(res.value.message).toBe('not found');
   });

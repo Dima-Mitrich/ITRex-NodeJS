@@ -2,8 +2,6 @@ import bcrypt from 'bcrypt';
 import { userRepository } from '../../repositoryCreater.js';
 import { NOT_FOUND_MESSAGE } from '../../../constants.js';
 
-
-
 class UserService {
     constructor(repository) {
         this.repository = repository;

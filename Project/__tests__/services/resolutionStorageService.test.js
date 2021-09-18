@@ -12,11 +12,20 @@ describe('resolution storage service have to', () => {
         expect(res).toBe('success');
     });
 
-    test('find resolution', async () => {
-        resolutionRepository.findResolution = jest.fn((name, isFromDoc) => ({ content: 'blah', patient: { name: name } }));
-        const res = await resolutionStorageService.findResolution('dima', false);
+    test('find resolution by name', async () => {
+        resolutionRepository.findResolutionByName = jest.fn((name, isFromDoc) => ({ content: 'blah', patient: { name: name } }));
+        const res = await resolutionStorageService.findResolutionsByName('dima');
 
-        expect(resolutionRepository.findResolution).toBeCalled();
+        expect(resolutionRepository.findResolutionByName).toBeCalled();
+        expect(res.content).toBe('blah');
+        expect(res.patient.name).toBe('dima');
+    });
+
+    test('find resolution by user id', async () => {
+        resolutionRepository.findResolutionByUserId = jest.fn((name, isFromDoc) => ({ content: 'blah', patient: { name: 'dima' } }));
+        const res = await resolutionStorageService.findResolutionByUserId('222');
+
+        expect(resolutionRepository.findResolutionByUserId).toBeCalled();
         expect(res.content).toBe('blah');
         expect(res.patient.name).toBe('dima');
     });
@@ -29,11 +38,18 @@ describe('resolution storage service have to', () => {
         expect(res).toBe('success');
     });
 
-    test('failed with search resolution', async () => {
-        resolutionRepository.findResolution = jest.fn((name, isFromDoc) => { throw new Error('not found') });
-        const res = await resolutionStorageService.findResolution('dima', false);
+    test('failed with search resolution by name', async () => {
+        resolutionRepository.findResolutionByName = jest.fn((name) => { throw new Error('not found') });
+        const res = await resolutionStorageService.findResolutionsByName('dima');
+        expect(resolutionRepository.findResolutionByName).toBeCalled();
+        expect(res).toBeInstanceOf(Error);
+        expect(res.message).toBe('not found');
+    });
 
-        expect(resolutionRepository.findResolution).toBeCalled();
+    test('failed with search resolution by user id', async () => {
+        resolutionRepository.findResolutionByUserId = jest.fn((name) => { throw new Error('not found') });
+        const res = await resolutionStorageService.findResolutionByUserId('222');
+        expect(resolutionRepository.findResolutionByUserId).toBeCalled();
         expect(res).toBeInstanceOf(Error);
         expect(res.message).toBe('not found');
     });

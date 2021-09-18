@@ -1,14 +1,12 @@
 const submitButton = document.getElementById('submit');
 const emailInput = document.getElementById('POST-email');
 const passwordInput = document.getElementById('POST-password');
-const addDoctorsBtn = document.getElementById('add_doctor_btn');
+
 
 submitButton.addEventListener('click', submitForm);
 document.addEventListener('keydown', submitForm);
 
-document.addEventListener('keydown', async()=>{
-    await fetch('/doctor/add-doctors');
-});
+
 
 document.forms.sing_in_form.onsubmit = (EO) => {
     EO.preventDefault();

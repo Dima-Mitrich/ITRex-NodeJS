@@ -24,12 +24,21 @@ describe('resolution controller have to', () => {
         expect(res.status).toBe(STATUSES.OK);
     });
 
-    test('find resolution', async () => {
-        patientController.getPatient = jest.fn((name) => ({ status: 200, value: { id: 1 } }));
-        resolutionService.findResolution = jest.fn((id) => ({ content: 'blah', patient: 'dima' }));
-        const res = await resolutionController.findResolution('dima');
+    test('find resolution by name', async () => {
+        resolutionService.findResolutionsByName = jest.fn(() => ([{ content: 'blah', patient: 'dima' }]));
+        const res = await resolutionController.findResolutionsByName({name:'Dima',role:'doctor'});
 
-        expect(resolutionService.findResolution).toBeCalled();
+        expect(resolutionService.findResolutionsByName).toBeCalled();
+        expect(res.value[0].content).toBe('blah');
+        expect(res.value[0].patient).toBe('dima');
+        expect(res.status).toBe(STATUSES.OK);
+    });
+
+    test('find resolution by user id', async () => {
+        resolutionService.findResolutionByUserId = jest.fn(() => ({ content: 'blah', patient: 'dima' }));
+        const res = await resolutionController.findResolutionsByUserId({userID:'222', role:'patient'});
+
+        expect(resolutionService.findResolutionByUserId).toBeCalled();
         expect(res.value.content).toBe('blah');
         expect(res.value.patient).toBe('dima');
         expect(res.status).toBe(STATUSES.OK);
@@ -45,13 +54,21 @@ describe('resolution controller have to', () => {
         expect(res.value.message).toBe('not found');
     });
 
-    test('failed with search resolution', async () => {
-        resolutionService.findResolution = jest.fn((name) => new Error('not found'));
-        patientController.getPatient = jest.fn((name) => ({ status: 200, value: name }));
-        const res = await resolutionController.findResolution('dima');
+    test('failed with search resolution by name', async () => {
+        resolutionService.findResolutionsByName = jest.fn((name) => new Error('not found'));
+        const res = await resolutionController.findResolutionsByName({name: 'Dima',role: 'doctor'});
 
-        expect(resolutionService.findResolution).toBeCalled();
-        expect(patientController.getPatient).toBeCalled();
+        expect(resolutionService.findResolutionsByName).toBeCalled();
+        expect(res.value).toBeInstanceOf(Error);
+        expect(res.value.message).toBe('not found');
+        expect(res.status).toBe(STATUSES.NotFound);
+    })
+
+    test('failed with search resolution by user id', async () => {
+        resolutionService.findResolutionByUserId = jest.fn((name) => new Error('not found'));
+        const res = await resolutionController.findResolutionsByUserId({userID: '222',role: 'patient'});
+
+        expect(resolutionService.findResolutionByUserId).toBeCalled();
         expect(res.value).toBeInstanceOf(Error);
         expect(res.value.message).toBe('not found');
         expect(res.status).toBe(STATUSES.NotFound);

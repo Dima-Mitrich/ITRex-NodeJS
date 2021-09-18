@@ -1,12 +1,12 @@
-import doctorController from '../doktor/controller/DoctorController.js';
-import { USER_TYPE } from '../../constants.js';
-import authController from '../auth/controller/AuthController.js';
+const { v4: uuidv4 } = require('uuid');
 
-export const doctorData = [
+const doctorData = [
     {
+        id: uuidv4(),
         name: 'Sergei ',
         email: 'sergei@mail.ru',
         password: '1111',
+        user_id: uuidv4(),
         gender: 'man',
         birthday: '1993-02-19',
         education: 'BBSY',
@@ -15,9 +15,11 @@ export const doctorData = [
 
     },
     {
+        id: uuidv4(),
         name: 'Andrei',
         email: 'andrei@mail.ru',
         password: '1111',
+        user_id: uuidv4(),
         gender: 'man',
         birthday: '1993-02-19',
         education: 'BBSY',
@@ -26,9 +28,11 @@ export const doctorData = [
 
     },
     {
+        id: uuidv4(),
         name: 'Fedor',
         email: 'fedor@mail.ru',
         password: '1111',
+        user_id: uuidv4(),
         gender: 'man',
         birthday: '1993-02-19',
         education: 'BBSY',
@@ -37,30 +41,17 @@ export const doctorData = [
 
     },
 ];
-export const specData = [
-    'dentist',
-    'surgeon',
-    'urologist',
-    'neurologist',
-    'psychiatrist',
-    'otolaryngologist',
-    'obstetrician',
-
+const specData = [
+    { spec: 'dentist', id: uuidv4() },
+    { spec: 'surgeon', id: uuidv4() },
+    { spec: 'urologist', id: uuidv4() },
+    { spec: 'neurologist', id: uuidv4() },
+    { spec: 'psychiatrist', id: uuidv4() },
+    { spec: 'otolaryngologist', id: uuidv4() },
+    { spec: 'obstetrician', id: uuidv4() },
 ];
 
-export default async function dataSeed(doctorData, specData) {
-    try {
-        for (const elem of specData) {
-            await doctorController.addSpec(elem);
-        }
+module.exports.doctors = doctorData;
+module.exports.specs = specData;
 
-        for (const elem of doctorData) {
-            elem.role = USER_TYPE.DOCTOR;
-            await authController.signUpNewUser(elem);
-        }
-    } catch (err) {
-        console.log(`data seeding err ${err}`);
-    }
 
-    return console.log('Seed doctor Data');
-}

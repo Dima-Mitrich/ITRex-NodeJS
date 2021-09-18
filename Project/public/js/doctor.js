@@ -45,6 +45,8 @@ async function callNextPatient() {
 
     const patient = await response.json();
 
+    console.log(patient);
+
     currentPatient = patient.value;
     console.log(currentPatient);
 
