@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./styles/styles.css" />
+    <title>Document</title>
+</head>
+
+<body>
+    <script defer type="module" src="./js/patient.js"></script>
+
+    <div class="main-container">
+        <div class="patient-page">
+            <div class="patient-page__queue-section">
+                <section>
+                    <h1>Cabinet</h1>
+                    <h2>Your status:</h2>
+                    <div id="patient-current-status"></div>
+                </section>
+                <form name="add_in_queue_form">
+                    <div id="spec_list"></div>
+                    <button class="button" id="addNewPatientButton">Take the queue</button>
+                </form>
+            </div>
+            <div class="patient-page__resolution-section">
+                <div id="foundResolutionField__patientInterface">Found resolution</div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

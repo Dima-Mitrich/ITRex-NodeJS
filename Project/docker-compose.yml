@@ -1,0 +1,47 @@
+version: '3.8'
+
+services: 
+    app:
+        image: dima95/itrex-laba-project 
+        command: npm start
+        working_dir: /usr/src/app
+        volumes:
+            - ./:/itrex-laba-project
+        ports: 
+            - 3000:3000
+        environment: 
+            NODE_ENV: dev
+            DEV_APP_PORT: 3000
+            REDIS_HOST: redis
+            SQL_HOST: mysql_server
+            SECRET_JWT_KEY: secretKey
+        depends_on: 
+            mysql_server:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+    mysql_server:
+        image: mysql:8.0
+        restart: always
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
+            interval: 3s
+            retries: 5
+            start_period: 30s
+        volumes:
+            - dbdata:/var/lib/mysql
+        environment: 
+            - MYSQL_PASSWORD=dimozzz_4el
+            - MYSQL_ROOT_PASSWORD=dimozzz_4el
+            - MYSQL_DATABASE=HOSPITAL
+    redis:
+        image: redis:6.2
+        restart: always
+        healthcheck:
+            test: [ "CMD", "redis-cli", "ping" ]
+            interval: 1s
+            timeout: 3s
+            retries: 30
+volumes:
+    dbdata:
+
