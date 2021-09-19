@@ -83,6 +83,15 @@ body {
     height: 33%;
 }
 
+.doctor-page__find-resolution-section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 33%;
+
+}
+
+
 .doctor-page__set-resolution-section input {
     height: 5rem;
     width: 37rem;
@@ -114,9 +123,6 @@ body {
     border-color: black;
     border-style: solid;
     border-width: 1px;
-    width: 37em;
-    height: 5em;
-    border-radius: 10px;
     text-align: center;
     margin-bottom: 5px;
 }
@@ -130,4 +136,14 @@ body {
 
 .doctor-page__find-resolution-section button {
     width: 10em;
+}
+
+.doctor-page__find-resolution-section section{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+#foundResolutionField__patientInterface{
+    width: 100%;
+    height: auto;
 }

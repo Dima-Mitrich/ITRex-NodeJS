@@ -3,31 +3,55 @@ import patientController from '../../patient/controller/PatientController.js';
 import Resolution from '../../interface/Resolution.js';
 import resolutionStorageService from '../services/ResolutionStorageService.js';
 import resultHandler from '../../helpers/resultHandler.js';
-import { STATUSES } from '../../../constants.js';
+import { STATUSES, USER_TYPE } from '../../../constants.js';
 
 class ResolutionController {
     constructor(resolutionListService) {
         this.resolutionListService = resolutionListService;
     }
 
-    async addResolution(newResolutionContent, currentPatient, ttl) {
-        const resolution = new Resolution(newResolutionContent, currentPatient.id, uuidv4());
-        const result = await this.resolutionListService.addNewResolution(resolution, ttl);
+    async addResolution(resData) {
+        const {
+            resolution, patientID, ttl, userID, spec,
+        } = resData;
+        const resolutionObj = new Resolution(resolution, patientID, uuidv4());
+        const resObj = {
+            resolutionObj, ttl, userID, spec,
+        };
+        const result = await this.resolutionListService.addNewResolution(resObj);
 
         return resultHandler(result, STATUSES.Created);
     }
 
-    async deleteResolution() {
-        const result = await this.resolutionListService.deleteResolution();
+    async deleteResolution(resolutionID) {
+        const result = await this.resolutionListService.deleteResolution(resolutionID);
 
         return resultHandler(result, STATUSES.OK);
     }
 
-    async findResolution({ name = null, userID = null }, isDoctor) {
-        const patient = await patientController.getPatient({ name, userID });
-        if (patient.status !== 200) return resultHandler(patient.value);
+    async findResolutionsByName({ name, role }) {
+        if (role !== USER_TYPE.DOCTOR) {
+            return { status: STATUSES.BadRequest };
+        }
 
-        const result = await this.resolutionListService.findResolution(patient.value.id, isDoctor);
+        const result = await this.resolutionListService.findResolutionsByName(name);
+        if (result.length === 0) {
+            return { status: STATUSES.NotFound };
+        }
+
+        return resultHandler(result, STATUSES.OK);
+    }
+
+    async findResolutionsByUserId({ userID, role }) {
+        if (role !== USER_TYPE.PATIENT) {
+            return { status: STATUSES.BadRequest };
+        }
+
+        const result = await this.resolutionListService.findResolutionByUserId(userID);
+
+        if (result.length === 0) {
+            return { status: STATUSES.NotFound };
+        }
 
         return resultHandler(result, STATUSES.OK);
     }

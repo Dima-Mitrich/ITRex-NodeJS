@@ -9,6 +9,7 @@ const addResolutionSchema = {
         newResolutionContent: { type: 'string' },
         currentPatient: { type: 'object' },
         ttl: { type: 'boolean' },
+        spec: { type: 'string' },
     },
     required: ['newResolutionContent', 'currentPatient', 'ttl'],
     additionalProperties: false,
@@ -17,6 +18,17 @@ const addResolutionSchema = {
 const nameSchema = {
     type: 'string', maxLength: MAX_LENGTH, minLength: MIN_LENGTH,
 };
+
+const specSchema = {
+    type: 'object',
+    properties: {
+        spec: { type: 'string', maxLength: MAX_LENGTH, minLength: MIN_LENGTH },
+    },
+    required: ['spec'],
+    additionalProperties: false,
+};
+
+
 
 const idSchema = {
     type: 'string', minLength: MIN_LENGTH,
@@ -40,8 +52,9 @@ const userLoginSchema = {
     properties: {
         email: { type: 'string', minLength: MIN_LENGTH },
         password: { type: 'string', minLength: MIN_LENGTH },
+        role: { type: 'string' },
     },
-    required: ['email', 'password'],
+    required: ['email', 'password', 'role'],
     additionalProperties: false,
 };
 
@@ -50,3 +63,4 @@ export const validateNameParams = ajv.compile(nameSchema);
 export const validateIdParams = ajv.compile(idSchema);
 export const validateNewUser = ajv.compile(newUserSchema);
 export const validateUserLogin = ajv.compile(userLoginSchema);
+export const validateDoctorSpec = ajv.compile(specSchema);

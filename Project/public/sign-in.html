@@ -10,14 +10,21 @@
     <script defer type="module" src="./js/sign-in.js"></script>
     <div class="sign-in_container">
         <h2>SIGN-IN</h2>
-        <section>
+        <form name="sing_in_form">
             <label for="POST-email">Email:</label>
             <input id="POST-email" type="email" name="email">
             <label for="POST-password">Password:</label>
             <input id="POST-password" type="password" name="password">
+            <div class="role">
+                <label>Role:</label>
+                <br>
+                <input type="radio" name="role" value="patient" required checked>Patient<br>
+                <input type="radio" name="role" value="doctor" required>Doctor<br>
+            </div>
+
             <button id="submit">SUBMIT</button>
             <a href="/sign-up">sign-up</a>
-        </section>
+        </form>
     </div>
 </body>
 </html>

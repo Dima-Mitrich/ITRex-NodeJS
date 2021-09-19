@@ -19,10 +19,14 @@ export default async function userDefine(sequelize) {
             allowNull: false,
             unique: true,
         },
+        role: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
     });
 
     try {
-        await sequelize.sync({ force: true });
+        //await sequelize.models.user.sync({ force: true });
     } catch (err) {
         console.log(err);
     }

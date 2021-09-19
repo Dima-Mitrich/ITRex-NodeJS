@@ -1,64 +1,68 @@
 import bcrypt from 'bcrypt';
-import userService from '../../src/api/auth/services/UserService.js';
+import SequelizeMock from 'sequelize-mock';
+import UserRepository from '../../src/api/users/repositories/UserRepository.js';
 import { NOT_FOUND_MESSAGE } from '../../src/constants.js';
+import userService from '../../src/api/users/services/UserService.js';
 
-const userRepository = userService.repository;
+userService.repository = new UserRepository(new SequelizeMock())
 
-describe('user service have to', () => {
+const repository = userService.repository;
 
-    test('create new user', async () => {
-        userRepository.addNewUser = jest.fn((user) => user);
+describe('doctor user service have to', () => {
 
-        const res = await userService.createNewUser({ password: '1234', name: 'dima', email: 'email' });
+  test('create new user', async () => {
+    repository.addNewUser = jest.fn((user) => user);
 
-        expect(res.name).toBe('dima');
-        expect(res.email).toBe('email');
-        expect(res.password).not.toBe('1234');
-        expect(userRepository.addNewUser).toBeCalled();
-    });
+    const res = await userService.createNewUser({ password: '1234', name: 'dima', email: 'email' });
 
-    test('fail with create new user', async () => {
-        userRepository.addNewUser = jest.fn((user) => { throw new Error('error') });
+    expect(res.name).toBe('dima');
+    expect(res.email).toBe('email');
+    expect(res.password).not.toBe('1234');
+    expect(repository.addNewUser).toBeCalled();
+  });
 
-        const res = await userService.createNewUser({ password: '1234', name: 'dima', email: 'email' });
+  test('fail with create new user', async () => {
+    repository.addNewUser = jest.fn((user) => { throw new Error('error') });
 
-        expect(res).toBeInstanceOf(Error);
-        expect(userRepository.addNewUser).toBeCalled();
-        expect(res.message).toBe('error');
-    });
+    const res = await userService.createNewUser({ password: '1234', name: 'dima', email: 'email' });
 
-    test('get user', async () => {
-        userRepository.getUser = jest.fn((userID) => ({ password: '1234', userID }));
+    expect(res).toBeInstanceOf(Error);
+    expect(repository.addNewUser).toBeCalled();
+    expect(res.message).toBe('error');
+  });
 
-        const res = await userService.getUser('1');
+  test('get user', async () => {
+    repository.getUser = jest.fn((userID) => ({ password: '1234', userID }));
 
-        expect(userRepository.getUser).toBeCalled();
-        expect(res).toEqual({ password: '1234', userID: '1' });
-    });
+    const res = await userService.getUser('1');
 
-    test('not found user', async () => {
-        userRepository.getUser = jest.fn((userID) => null);
+    expect(repository.getUser).toBeCalled();
+    expect(res).toEqual({ password: '1234', userID: '1' });
+  });
 
-        const res = await userService.getUser('1');
+  test('not found user', async () => {
+    repository.getUser = jest.fn((userID) => null);
 
-        expect(userRepository.getUser).toBeCalled();
-        expect(res).toBeInstanceOf(Error);
-        expect(res.message).toBe(NOT_FOUND_MESSAGE);
-    });
+    const res = await userService.getUser('1');
 
-    test('match a password', async () => {
-        userRepository.getUser = jest.fn((userID) => ({userID, password: bcrypt.hashSync('1234', 10)}));
+    expect(repository.getUser).toBeCalled();
+    expect(res).toBeInstanceOf(Error);
+    expect(res.message).toBe(NOT_FOUND_MESSAGE);
+  });
 
-        const res = await userService.isPasswordMatches('1', '1234');
-    
-        expect(res).toBe(true);
-    });
+  test('match a password', async () => {
+    repository.getUser = jest.fn((userID) => ({userID, password: bcrypt.hashSync('1234', 10)}));
 
-    test('not match a password', async () => {
-        userRepository.getUser = jest.fn((userID) => ({userID, password: bcrypt.hashSync('12345', 10)}));
+    const res = await userService.isPasswordMatches('1', '1234');
 
-        const res = await userService.isPasswordMatches('1', '1234');
-    
-        expect(res).toBe(false);
-    })
+    expect(res).toBe(true);
+  });
+
+  test('not match a password', async () => {
+    repository.getUser = jest.fn((userID) => ({userID, password: bcrypt.hashSync('12345', 10)}));
+
+    const res = await userService.isPasswordMatches('1', '1234');
+
+    expect(res).toBe(false);
+  })
 });

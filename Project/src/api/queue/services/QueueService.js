@@ -6,21 +6,21 @@ export class QueueService {
         this.queueRepository = queueRepository;
     }
 
-    async addPatient(id) {
+    async addPatient(id, spec) {
         try {
-            const result = await this.queueRepository.push(id);
+            const result = await this.queueRepository.push(id, spec);
 
             return result;
         } catch (err) {
             console.log(err);
 
-            return err;
+            return err;//при отсутствии пациента в очереди  на фронте не появл статус 409 и ошибка
         }
     }
 
-    async takePatient() {
+    async takePatient(spec) {
         try {
-            const patientID = await this.queueRepository.shift();
+            const patientID = await this.queueRepository.shift(spec);
 
             if (!patientID) {
                 throw new Error(NOT_FOUND_MESSAGE);
@@ -32,9 +32,9 @@ export class QueueService {
         }
     }
 
-    async isEmpty() {
+    async isEmpty(spec) {
         try {
-            const result = await this.queueRepository.isEmpty();
+            const result = await this.queueRepository.isEmpty(spec);
 
             return result;
         } catch (err) {

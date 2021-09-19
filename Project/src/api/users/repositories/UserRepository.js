@@ -8,6 +8,7 @@ export default class UserRepository {
             user_id: user.userID,
             password: user.password,
             login: user.email,
+            role: user.role,
         });
 
         return user;

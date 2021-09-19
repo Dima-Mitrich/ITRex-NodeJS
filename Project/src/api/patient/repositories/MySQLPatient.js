@@ -48,7 +48,6 @@ export default class MySQLPatient {
                 user_id: userID,
             },
         });
-
         return result;
     }
 }

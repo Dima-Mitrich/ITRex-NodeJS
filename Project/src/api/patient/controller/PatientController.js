@@ -15,9 +15,9 @@ class PatientController {
         return resultHandler(result, STATUSES.Created);
     }
 
-    async addInQueue(userID) {
+    async addInQueue(userID, spec) {
         const patient = await this.getPatient({ userID });
-        const result = await this.queueService.addPatient(patient.value.id);
+        const result = await this.queueService.addPatient(patient.value.id, spec);
 
         return resultHandler(result, STATUSES.Created);
     }
@@ -26,17 +26,18 @@ class PatientController {
         name = null, id = null, email = null, userID = null,
     }) {
         const patient = await this.patientStorageService.getPatient(name, id, email, userID);
-
         return resultHandler(patient, STATUSES.OK);
     }
 
-    async shiftPatient() {
-        const patientID = await this.queueService.takePatient();
+    async shiftPatient(spec) {
+        const patientID = await this.queueService.takePatient(spec);
+
         const patient = await this.getPatient({ id: patientID });
 
         if (patient.status !== STATUSES.NotFound) {
-            const isEmpty = await this.isEmpty();
+            const isEmpty = await this.isEmpty(spec);
             patient.value.last = isEmpty;
+            return patient;
         }
 
         return patient;
@@ -53,8 +54,8 @@ class PatientController {
         return false;
     }
 
-    async isEmpty() {
-        const result = this.queueService.isEmpty();
+    async isEmpty(spec) {
+        const result = this.queueService.isEmpty(spec);
 
         return result;
     }

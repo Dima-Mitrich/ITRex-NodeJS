@@ -1,5 +1,5 @@
 import patientController from '../../src/api/patient/controller/PatientController.js';
-import { STATUSES, EMAIL_IS_EXIST } from '../../src/constants.js';
+import {STATUSES, EMAIL_IS_EXIST, NOT_FOUND_MESSAGE} from '../../src/constants.js';
 
 const { queueService } = patientController;
 const { patientStorageService } = patientController;
@@ -44,7 +44,7 @@ describe('patient controler have to', () => {
     test('shift patient from queue', async () => {
         queueService.takePatient = jest.fn(() => 4);
         patientController.getPatient = jest.fn((id) => ({ status: STATUSES.OK, value: { name: 'dima' } }));
-
+        patientController.isEmpty = jest.fn(() => true);
         const res = await patientController.shiftPatient();
         expect(res.status).toBe(STATUSES.OK);
         expect(res.value.name).toBe('dima');
@@ -55,7 +55,7 @@ describe('patient controler have to', () => {
         queueService.takePatient = jest.fn(() => undefined);
         patientController.getPatient = jest.fn((id) => ({ status: STATUSES.NotFound, value: new Error('not found') }));
 
-        const res = await patientController.shiftPatient();
+        const res = await patientController.shiftPatient('dentist');
         expect(res.status).toBe(STATUSES.NotFound);
         expect(res.value).toBeInstanceOf(Error);
         expect(res.value.message).toBe('not found');

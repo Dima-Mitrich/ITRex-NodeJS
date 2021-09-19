@@ -18,10 +18,14 @@ export default async function resolutionDefine(sequelize) {
             type: DataTypes.BOOLEAN,
             allowNull: false,
         },
+        speciality: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
     });
 
     try {
-        await sequelize.sync({ force: true });
+        // await sequelize.models.resolution.sync({ force: true });
     } catch (err) {
         console.log(err);
     }

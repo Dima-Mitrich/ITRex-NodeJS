@@ -58,3 +58,19 @@ npm test
 STORAGE_TYPE
 ```
 в файле .env 
+
+миграции
+
+перейти в папку sequelize-migrations
+````
+    cd sequelize-migrations
+````
+
+в консоли
+
+````
+    npx sequelize-cli db:migrate
+    
+    npx sequelize-cli db:seed:all
+````
+

@@ -1,12 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
-import userService from '../services/UserService.js';
+import userService from '../../users/services/UserService.js';
 import jwtService from '../services/JwtService.js';
 import resultHandler from '../../helpers/resultHandler.js';
 import calculateAge from '../../helpers/calculateAge.js';
 import patientController from '../../patient/controller/PatientController.js';
+import doctorController from '../../doktor/controller/DoctorController.js';
 import {
     STATUSES, WRONG_EMAIL_MESSAGE, WRONG_PASSWORD_MESSAGE, NO_TOKEN_MESSAGE, EMAIL_IS_EXIST,
-    WRONG_BIRTHDAY_DATE,
+    WRONG_BIRTHDAY_DATE, USER_TYPE,
 } from '../../../constants.js';
 
 class AuthController {
@@ -15,24 +16,38 @@ class AuthController {
         this.jwtService = jwtService;
     }
 
-    async signUpNewPatient(patient) {
+    async signUpNewUser(user) {
         try {
-            const age = calculateAge(patient.birthday);
+            const age = calculateAge(user.birthday);
             if (age > 120 || age < 1) throw new Error(WRONG_BIRTHDAY_DATE);
+            if (user.role === USER_TYPE.PATIENT) {
+                const isExist = await patientController.isExist(user);
+                if (isExist) throw new Error(EMAIL_IS_EXIST);
+            }
+            if (user.role === USER_TYPE.DOCTOR) {
+                const isExist = await doctorController.isExist(user);
+                if (isExist) throw new Error(EMAIL_IS_EXIST);
+            }
 
-            const isExist = await patientController.isExist(patient);
-            if (isExist) throw new Error(EMAIL_IS_EXIST);
-
-            const { password, email } = patient;
-            const newUser = await this.createNewUser(password, email);
+            const { role, password, email } = user;
+            const newUser = await this.createNewUser(role, password, email);
 
             if (newUser.status !== STATUSES.Created) throw new Error(newUser.value.message);
 
-            patient.id = uuidv4();
-            patient.userID = newUser.value.userID;
-            patient.password = newUser.value.password;
-            patient.age = age;
-            const result = await patientController.addPatient(patient);
+            user.id = uuidv4();
+            user.userID = newUser.value.userID;
+            user.password = newUser.value.password;
+            user.age = age;
+
+            let result;
+
+            if (user.role === USER_TYPE.PATIENT) {
+                result = await patientController.addPatient(user);
+            }
+
+            if (user.role === USER_TYPE.DOCTOR) {
+                result = await doctorController.addDoctor(user);
+            }
 
             return resultHandler(result, STATUSES.Created);
         } catch (err) {
@@ -40,24 +55,35 @@ class AuthController {
         }
     }
 
-    async createNewUser(password, email) {
-        const user = await this.userService.createNewUser({ password, userID: uuidv4(), email });
+    async createNewUser(role, password, email) {
+        const user = await this.userService.createNewUser({
+            password, userID: uuidv4(), email, role,
+        });
 
         return resultHandler(user, STATUSES.Created);
     }
 
     async signInUser(user) {
-        const { email, password } = user;
-        const patient = await patientController.getPatient({ email });
+        const { role, email, password } = user;
 
-        if (patient.status === 404) return resultHandler(new Error(WRONG_EMAIL_MESSAGE));
+        let candidate;
 
-        const userID = patient.value.user_id;
+        if (role === USER_TYPE.PATIENT) {
+            candidate = await patientController.getPatient({ email });
+        }
+        if (role === USER_TYPE.DOCTOR) {
+            candidate = await doctorController.getDoctor({ email });
+        }
+
+        if (candidate.status === 404) return resultHandler(new Error(WRONG_EMAIL_MESSAGE));
+
+        const userID = candidate.value.user_id;
+
         const isPasswordRight = await this.userService.isPasswordMatches(userID, password);
 
         if (!isPasswordRight) return resultHandler(new Error(WRONG_PASSWORD_MESSAGE));
 
-        const token = this.jwtService.createJwtToken(userID);
+        const token = this.jwtService.createJwtToken(role, userID);
 
         return resultHandler(token);
     }

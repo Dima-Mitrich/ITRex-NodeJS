@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import authController from '../api/auth/controller/AuthController.js';
 import { validateUserLogin } from '../api/helpers/validate.js';
-import { STATUSES } from '../constants.js';
+import { STATUSES, USER_TYPE } from '../constants.js';
 
 const loginRouter = express.Router();
 const __dirname = path.resolve();
@@ -18,14 +18,24 @@ loginRouter.post('/', (req, res, next) => {
         ? next()
         : res.status(STATUSES.BadRequest).json(validateUserLogin.errors);
 }, async (req, res) => {
+    const checkRole = ((req.body.role).toString() === (USER_TYPE.PATIENT).toString());
+
     const result = await authController.signInUser(req.body);
 
-    if (result.status === 200) {
-        res.cookie('jwt', `${result.value}`, {
+    if (result.status === 200 && checkRole) {
+        res.cookie('jwtPatient', `${result.value}`, {
             httpOnly: true,
-            // expires: new Date(Date.now() + parseInt(config.app.jwtExpTime, 10)), спросить стоит ли ставить такое время
+            //expires: new Date(Date.now() + parseInt(config.app.jwtExpTime, 10)),
         });
-        res.status(result.status).json('success');
+
+        res.status(result.status).json(req.body.role);
+    } else if (result.status === 200 && !checkRole) {
+        res.cookie('jwtDoctor', `${result.value}`, {
+            httpOnly: true,
+            //expires: new Date(Date.now() + parseInt(config.app.jwtExpTime, 10)),
+        });
+
+        res.status(result.status).json(req.body.role);
     } else {
         res.status(result.status).json(result.value);
     }
