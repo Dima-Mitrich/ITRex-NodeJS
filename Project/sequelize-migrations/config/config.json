@@ -1,21 +1,21 @@
 {
   "development": {
     "username": "root",
-    "password": null,
+    "password": "dimozzz_4el",
     "database": "hospital",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": null,
+    "password": "dimozzz_4el",
     "database": "hospital",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
     "username": "test",
-    "password": null,
+    "password": "dimozzz_4el",
     "database": "hospital",
     "host": "127.0.0.1",
     "dialect": "mysql"

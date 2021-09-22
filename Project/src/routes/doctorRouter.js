@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import { STATUSES, USER_TYPE } from '../constants.js';
 
-import doctorController from '../api/doktor/controller/DoctorController.js';
+import doctorController from '../api/doctor/controller/DoctorController.js';
 import authController from '../api/auth/controller/AuthController.js';
 
 const __dirname = path.resolve();
@@ -13,7 +13,7 @@ doctorRouter.use('/', cookieParser());
 
 doctorRouter.get('/', async (req, res) => {
     const result = await authController.checkToken(req.cookies.jwtDoctor);
-    const checkRole = ((result.value.role).toString() === (USER_TYPE.DOCTOR).toString());
+    const checkRole = result.value.role === USER_TYPE.DOCTOR;
 
     if (result.status === 200 && checkRole) {
         res.sendFile(path.resolve(__dirname, 'public', 'doctor-cabinet.html'));
@@ -22,7 +22,7 @@ doctorRouter.get('/', async (req, res) => {
     }
 });
 
-doctorRouter.get('/doctor-data', async (req, res) => {
+doctorRouter.get('/data', async (req, res) => {
     const result = await authController.checkToken(req.cookies.jwtDoctor);
     const doctorSpecs = await doctorController.getSpecByUserId(result.value.id);
 
@@ -31,7 +31,7 @@ doctorRouter.get('/doctor-data', async (req, res) => {
         : res.status(STATUSES.BadRequest).json(doctorSpecs.value);
 });
 
-doctorRouter.get('/spec-list', async (req, res) => {
+doctorRouter.get('/specialties', async (req, res) => {
     const result = await doctorController.getSpecList();
 
     res.status(result.status).json(result.value);

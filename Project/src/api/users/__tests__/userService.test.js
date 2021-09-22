@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import SequelizeMock from 'sequelize-mock';
-import UserRepository from '../../src/api/users/repositories/UserRepository.js';
-import { NOT_FOUND_MESSAGE } from '../../src/constants.js';
-import userService from '../../src/api/users/services/UserService.js';
+import UserRepository from '../repositories/UserRepository.js';
+import { NOT_FOUND_MESSAGE } from '../../../constants.js';
+import userService from '../services/UserService.js';
 
 userService.repository = new UserRepository(new SequelizeMock())
 

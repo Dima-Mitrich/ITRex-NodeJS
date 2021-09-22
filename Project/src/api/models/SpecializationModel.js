@@ -13,15 +13,14 @@ export default async function specializationDefine(sequelize) {
         },
         specialization: {
             type: DataTypes.STRING,
-            unique: true,
             allowNull: false,
         },
 
     });
-
+    /*
     try {
-        //await sequelize.models.specialization.sync({ force: true });
+        await sequelize.models.specialization.sync({ force: true });
     } catch (err) {
         console.log(err);
-    }
+    } */
 }

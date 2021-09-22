@@ -1,6 +1,6 @@
-import patientController from '../../src/api/patient/controller/PatientController.js';
-import resolutionController from '../../src/api/resolution/controller/ResolutionController.js';
-import { STATUSES } from '../../src/constants.js';
+import patientController from '../../patient/controller/PatientController.js';
+import resolutionController from '../controller/ResolutionController.js';
+import { STATUSES } from '../../../constants.js';
 
 const resolutionService = resolutionController.resolutionListService;
 
@@ -21,7 +21,7 @@ describe('resolution controller have to', () => {
 
         expect(resolutionService.deleteResolution).toBeCalled();
         expect(res.value).toBe('success');
-        expect(res.status).toBe(STATUSES.OK);
+        expect(res.status).toBe(STATUSES.NoContent);
     });
 
     test('find resolution by name', async () => {

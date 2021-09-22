@@ -1,4 +1,4 @@
-import authController from '../auth/controller/AuthController.js';
+import authController from '../../auth/controller/AuthController.js';
 
 export default async function checkTokenPatient(req, res, next) {
     const userID = await authController.checkToken(req.cookies.jwtPatient);

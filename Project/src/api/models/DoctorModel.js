@@ -36,10 +36,10 @@ export default async function doctorDefine(sequelize) {
             allowNull: false,
         },
     });
-
+    /*
     try {
-        //await sequelize.models.doctor.sync({ force: true });
+        await sequelize.models.doctor.sync({ force: true });
     } catch (err) {
         console.log(err);
-    }
+    } */
 }

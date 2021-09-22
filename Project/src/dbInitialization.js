@@ -10,7 +10,7 @@ import { PORTS } from './constants.js';
 const { Sequelize, DataTypes } = pkg;
 
 export default function dbInit() {
-    const sequelize = new Sequelize('HOSPITAL', config.app.userName, '', {
+    const sequelize = new Sequelize('HOSPITAL', config.app.userName, config.app.password, {
         dialect: 'mysql',
         host: config.app.sqlHost,
         port: PORTS.SQL_PORT,
@@ -34,8 +34,6 @@ export default function dbInit() {
     sequelize.models.resolution.belongsTo(sequelize.models.doctor, {
         as: 'doctor',
     });
-
-
 
     sequelize.models.patient.belongsTo(sequelize.models.user, {
         foreignKey: {

@@ -47,7 +47,11 @@ export default class MySQLSpecialization {
     }
 
     async getAllSpec() {
-        const result = await this.specializationModel.findAll();
+        const result = await this.specializationModel.findAll({
+            include: {
+                model: this.doctorModel,
+            },
+        });
 
         return result;
     }

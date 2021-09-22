@@ -1,21 +1,21 @@
 import { resolutionRepository, doctorRepository } from '../../repositoryCreater.js';
+import { NO_RIGHTS_TO_RESOLUTION_DELETE, NOT_FOUND_MESSAGE } from '../../../constants.js';
+import config from '../../../../config.js';
 
 class ResolutionStorageService {
-    constructor(resolutionRepository, doctorRepository) {
+    constructor(resolutionRepository, doctorRepository, ttl) {
         this.resolutionRepository = resolutionRepository;
         this.doctorRepository = doctorRepository;
         this.currentResolution = null;
+        this.ttl = ttl;
     }
 
     async addNewResolution(resObj) {
-        const {
-            resolutionObj, ttl, userID, spec,
-        } = resObj;
+        const { userID } = resObj;
         try {
-            // console.log(this.doctorRepository);
-            // const doctor = await this.doctorRepository.getByUserID(userID);
+            const doctor = await this.doctorRepository.getByUserId(userID);
 
-            const result = await this.resolutionRepository.push(resolutionObj, ttl, userID, spec);
+            const result = await this.resolutionRepository.push(resObj, doctor.id);
 
             return result;
         } catch (err) {
@@ -29,7 +29,11 @@ class ResolutionStorageService {
         try {
             const result = await this.resolutionRepository.findResolutionByName(name);
 
-            return result;
+            const resultWithTtl = result.filter(
+                (elem) => !elem.ttl || this.ttl - (new Date().getTime() - new Date(elem.createdAt).getTime()) > 0,
+            );
+
+            return resultWithTtl;
         } catch (err) {
             console.log(err);
 
@@ -49,18 +53,20 @@ class ResolutionStorageService {
         }
     }
 
-    async deleteResolution(resolutionID) {
-        try {
-            const result = await this.resolutionRepository.deleteResolution(resolutionID);
+    async deleteResolution(resolutionID, userID) {
+        const res = await this.resolutionRepository.getResolutionById(resolutionID);
 
-            return result;
-        } catch (err) {
-            console.log(err);
+        if (!res) throw new Error(NOT_FOUND_MESSAGE);
 
-            return err;
-        }
+        const doctor = await this.doctorRepository.getByUserId(userID);
+
+        if (!(res.doctorId === doctor.id)) throw new Error(NO_RIGHTS_TO_RESOLUTION_DELETE);
+
+        const result = await this.resolutionRepository.deleteResolution(resolutionID);
+
+        return result;
     }
 }
 
-const resolutionStorageService = new ResolutionStorageService(resolutionRepository, doctorRepository);
+const resolutionStorageService = new ResolutionStorageService(resolutionRepository, doctorRepository, config.app.TTL_MILSEC);
 export default resolutionStorageService;

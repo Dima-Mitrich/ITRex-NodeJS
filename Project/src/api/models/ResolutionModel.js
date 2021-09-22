@@ -23,10 +23,10 @@ export default async function resolutionDefine(sequelize) {
             allowNull: false,
         },
     });
-
+    /*
     try {
-        // await sequelize.models.resolution.sync({ force: true });
+        await sequelize.models.resolution.sync({ force: true });
     } catch (err) {
         console.log(err);
-    }
+    } */
 }

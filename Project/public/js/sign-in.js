@@ -2,11 +2,8 @@ const submitButton = document.getElementById('submit');
 const emailInput = document.getElementById('POST-email');
 const passwordInput = document.getElementById('POST-password');
 
-
 submitButton.addEventListener('click', submitForm);
 document.addEventListener('keydown', submitForm);
-
-
 
 document.forms.sing_in_form.onsubmit = (EO) => {
     EO.preventDefault();

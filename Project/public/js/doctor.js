@@ -1,8 +1,6 @@
 import { dischargeInput, addButtonStatusChange } from './common.js';
 
 let currentPatient = null;
-const foundedPatient = null;
-let spec = null;
 
 const nextPatientButton = document.getElementById('nextButton');
 const addNewResolutionButton = document.getElementById('addNewResolutionButton');
@@ -15,9 +13,7 @@ const searchResolutionDoctorInput = document.getElementById('searchResolution__d
 const addResolutionWithTTLCheckbox = document.getElementById('add-ttl-checkbox');
 
 const queueListDoctorInterface = document.getElementById('currentPatientName_doctorInterface');
-const patientCurrentStatus = document.getElementById('patient-current-status');
 const doctorFieldWithFoundedResolution = document.getElementById('foundResolutionField__doctorInterface');
-const doctorName = document.getElementById('doc_name');
 const doctorSpec = document.getElementById('spec');
 
 nextPatientButton.addEventListener('click', callNextPatient);
@@ -29,33 +25,29 @@ newResolutionInput.addEventListener('input', addButtonStatusChange(addNewResolut
 searchResolutionDoctorInput.addEventListener('input', addButtonStatusChange(showResolutionToDoctorButton));
 
 window.addEventListener('load', async () => {
-    const response = await fetch('/doctor/doctor-data');
+    const response = await fetch('/doctor/data');
     const data = await response.json();
-    for (const elem of data) {
+
+    data.forEach((elem) => {
         const item = document.createElement('option');
         item.textContent = elem;
         item.value = elem;
         doctorSpec.appendChild(item);
-    }
+    });
 });
 
 async function callNextPatient() {
-    spec = doctorSpec.value;
-    const response = await fetch(`/patient/next?spec=${spec}`);
-
+    const response = await fetch('/patient/next');
     const patient = await response.json();
 
-    console.log(patient);
+    if (patient.status === 404) {
+        queueListDoctorInterface.innerHTML = 'queue is empty';
+        return;
+    }
 
     currentPatient = patient.value;
-    console.log(currentPatient);
 
     queueListDoctorInterface.innerHTML = currentPatient.name;
-    // patientCurrentStatus.innerHTML = 'at an appointment'; //при разделении страниц отвалилось
-    //
-    // if (patient.last) {
-    //     nextPatientButton.disabled = true;
-    // }
 }
 
 async function addNewResolutionForCurrentPatient() {
@@ -75,7 +67,7 @@ async function addNewResolutionForCurrentPatient() {
             'Content-Type': 'application/json;charset=utf-8',
         },
         body: JSON.stringify({
-            newResolutionContent, currentPatient, ttl, spec,
+            newResolutionContent, currentPatient, ttl, spec: doctorSpec.value,
         }),
     });
 
@@ -88,20 +80,13 @@ async function addNewResolutionForCurrentPatient() {
 async function findResolutionForDoctor() {
     const patientName = searchResolutionDoctorInput.value;
 
-    const response = await fetch(`resolutions/${patientName}`, {
-        method: 'GET',
-        headers: {
-            isDoctor: true,
-        },
-    });
+    const response = await fetch(`resolutions/${patientName}`);
 
     if (response.status !== 200) {
         doctorFieldWithFoundedResolution.innerHTML = 'There is no such patient';
     } else {
         const foundResolution = await response.json();
         console.log(foundResolution);
-        // doctorFieldWithFoundedResolution.innerHTML = foundResolution.content;
-        // foundedPatient = foundResolution.patientID;
 
         doctorFieldWithFoundedResolution.innerHTML = '';
 
@@ -112,7 +97,7 @@ async function findResolutionForDoctor() {
         const tabHeaders = document.createElement('tr');
 
         const numberHeader = document.createElement('th');
-        numberHeader.innerHTML = 'number';
+        numberHeader.innerHTML = 'Number';
         tabHeaders.appendChild(numberHeader);
 
         const resIdHeader = document.createElement('th');
@@ -142,10 +127,12 @@ async function findResolutionForDoctor() {
         resTable.appendChild(tabHeaders);
 
         foundResolution.forEach((elem, i) => {
+            const arr = elem.createdAt.split('T');
+            const time = arr[1].substr(0, 8);
             const tabRow = document.createElement('tr');
 
             const number = document.createElement('td');
-            number.innerHTML = i;
+            number.innerHTML = i + 1;
             tabRow.appendChild(number);
 
             const resID = document.createElement('td');
@@ -169,7 +156,7 @@ async function findResolutionForDoctor() {
             tabRow.appendChild(docName);
 
             const createdAt = document.createElement('td');
-            createdAt.innerHTML = new Date(elem.createdAt);
+            createdAt.innerHTML = `${arr[0]} | ${time}`;
             tabRow.appendChild(createdAt);
 
             resTable.appendChild(tabRow);
@@ -183,7 +170,6 @@ async function findResolutionForDoctor() {
 
 async function deleteResolution() {
     const resolutionId = delInput.value;
-    console.log(resolutionId);
 
     const response = await fetch(`resolutions/${resolutionId}`, {
         method: 'DELETE',

@@ -1,5 +1,5 @@
-import doctorStorageService from '../../src/api/doktor/services/DoctorStorageServise.js';
-import {NOT_FOUND_MESSAGE} from '../../src/constants';
+import doctorStorageService from '../services/DoctorStorageServise.js';
+import {NOT_FOUND_MESSAGE} from '../../../constants';
 
 const doctorRepository = doctorStorageService.doctorRepository;
 
@@ -25,8 +25,6 @@ describe('doctor service have to', () => {
     expect(doctorRepository.push).toBeCalled();
     expect(res).toEqual({dataValues:{id:'111'}});
   });
-
-
 
   test('get doctor by id', async () => {
     doctorRepository.getById = jest.fn(( ) =>('aaa'));
@@ -70,11 +68,4 @@ describe('doctor service have to', () => {
     expect(doctorRepository.getByUserId).toBeCalled();
     expect(res.message).toBe(NOT_FOUND_MESSAGE);
   });
-
-
-
-
-
-
-
 });

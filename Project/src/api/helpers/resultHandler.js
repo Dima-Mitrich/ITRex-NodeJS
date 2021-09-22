@@ -1,9 +1,9 @@
 /* eslint-disable */
-import ResultWrapper from '../interface/ResultWrapper.js';
+import ResultWrapper from './resultWrapper.js';
 import {
     STATUSES, NOT_FOUND_MESSAGE, BAD_REQUEST_MESSAGE, NAME_IS_EXIST, EMAIL_IS_EXIST,
     WRONG_PASSWORD_MESSAGE, WRONG_EMAIL_MESSAGE, NO_TOKEN_MESSAGE, JWT_EXPIRED_MESSAGE,
-    WRONG_BIRTHDAY_DATE,
+    WRONG_BIRTHDAY_DATE, NO_RIGHTS_TO_RESOLUTION_DELETE,
 } from '../../constants.js';
 
 export default function resultHandler(result, statusSucces = STATUSES.OK) {
@@ -37,6 +37,9 @@ export default function resultHandler(result, statusSucces = STATUSES.OK) {
                 break;
             case WRONG_BIRTHDAY_DATE:
                 statusError = STATUSES.BadRequest;
+                break;
+            case NO_RIGHTS_TO_RESOLUTION_DELETE:
+                statusError = STATUSES.Forbidden;
                 break;
             default:
                 statusError = STATUSES.ServerError;

@@ -1,5 +1,5 @@
-import patientController from '../../src/api/patient/controller/PatientController.js';
-import {STATUSES, EMAIL_IS_EXIST, NOT_FOUND_MESSAGE} from '../../src/constants.js';
+import patientController from '../controller/PatientController.js';
+import {STATUSES, EMAIL_IS_EXIST, NOT_FOUND_MESSAGE} from '../../../constants.js';
 
 const { queueService } = patientController;
 const { patientStorageService } = patientController;

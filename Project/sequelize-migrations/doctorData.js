@@ -53,5 +53,3 @@ const specData = [
 
 module.exports.doctors = doctorData;
 module.exports.specs = specData;
-
-

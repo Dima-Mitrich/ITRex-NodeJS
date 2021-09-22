@@ -1,5 +1,5 @@
-import patientStorageService from '../../src/api/patient/services/PatientStorageService.js';
-import { NOT_FOUND_MESSAGE } from '../../src/constants.js';
+import patientStorageService from '../services/PatientStorageService.js';
+import { NOT_FOUND_MESSAGE } from '../../../constants.js';
 
 const { patientRepository } = patientStorageService;
 

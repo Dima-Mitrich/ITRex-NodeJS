@@ -1,5 +1,5 @@
-import doctorController from '../../src/api/doktor/controller/DoctorController.js';
-import { STATUSES, EMAIL_IS_EXIST } from '../../src/constants.js';
+import doctorController from '../controller/DoctorController.js';
+import { STATUSES, EMAIL_IS_EXIST } from '../../../constants.js';
 
 const {doctorStorageService, specStorageService} = doctorController
 

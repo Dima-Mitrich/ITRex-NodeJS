@@ -3,8 +3,9 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import patientController from '../api/patient/controller/PatientController.js';
 import authController from '../api/auth/controller/AuthController.js';
-import { STATUSES, USER_TYPE } from '../constants.js';
-import { validateDoctorSpec } from '../api/helpers/validate.js';
+import { USER_TYPE } from '../constants.js';
+import doctorIdMiddleware from '../api/helpers/middlewares/doctorIdMiddleware.js';
+import doctorController from '../api/doctor/controller/DoctorController.js';
 
 const patientRouter = express.Router();
 const __dirname = path.resolve();
@@ -15,7 +16,7 @@ patientRouter.use('/', express.json());
 patientRouter.get('/', async (req, res) => {
     const result = await authController.checkToken(req.cookies.jwtPatient);
 
-    const checkRole = ((result.value.role).toString() === (USER_TYPE.PATIENT).toString());
+    const checkRole = result.value.role === USER_TYPE.PATIENT;
 
     if (result.status === 200 && checkRole) {
         res.sendFile(path.resolve(__dirname, 'public', 'patient-cabinet.html'));
@@ -25,33 +26,26 @@ patientRouter.get('/', async (req, res) => {
 });
 
 patientRouter.get('/next', async (req, res) => {
-    const result = await patientController.shiftPatient(req.query.spec);
-    console.log('?>>>>>>>>>>>>>>>>>>>>>>>>>....');
-    console.log(result);
+    const token = await authController.checkToken(req.cookies.jwtDoctor);
+    const doc = await doctorController.getDoctor({ userID: token.value.id });
+    const result = await patientController.shiftPatient(doc.value.id);
 
     res.status(result.status).json(result);
 });
 
-patientRouter.post('/', (req, res, next) => {
-
-    console.log(validateDoctorSpec(req.body));
-    validateDoctorSpec(req.body)
-        ? next()
-        : res.status(STATUSES.BadRequest).json(validateDoctorSpec.errors);
-}, async (req, res, next) => {
-    console.log(req.body);
+patientRouter.post('/', doctorIdMiddleware, async (req, res, next) => {
     const userID = await authController.checkToken(req.cookies.jwtPatient);
-    const { spec } = req.body;
+    const { docID } = req.body;
 
     if (userID.status === 200) {
         req.userID = userID.value.id;
-        req.spec = spec;
+        req.docID = docID;
         next();
     } else {
         res.status(userID.status).json(userID.value);
     }
 }, async (req, res) => {
-    const result = await patientController.addInQueue(req.userID, req.spec);
+    const result = await patientController.addInQueue(req.userID, req.docID);
 
     res.status(result.status).json(result.value);
 });

@@ -1,5 +1,5 @@
-import queueService from '../../src/api/queue/services/QueueService.js';
-import { NOT_FOUND_MESSAGE } from '../../src/constants.js';
+import queueService from '../services/QueueService.js';
+import { NOT_FOUND_MESSAGE } from '../../../constants.js';
 
 const { queueRepository } = queueService;
 
@@ -31,11 +31,13 @@ describe('queue service have to', () => {
     });
 
     test('failed with get patient from queue', async () => {
-        queueRepository.shift = jest.fn(() => undefined);
-        const res = await queueService.takePatient();
-
-        expect(queueRepository.shift).toBeCalled();
-        expect(res).toBeInstanceOf(Error);
-        expect(res.message).toBe(NOT_FOUND_MESSAGE);
+        try {
+            queueRepository.shift = jest.fn(() => undefined);
+            const res = await queueService.takePatient();
+        } catch (err) {
+            expect(queueRepository.shift).toBeCalled();
+            expect(err).toBeInstanceOf(Error);
+            expect(err.message).toBe(NOT_FOUND_MESSAGE);
+        }
     });
 });

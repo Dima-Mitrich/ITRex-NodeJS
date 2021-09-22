@@ -38,8 +38,10 @@ body {
 .patient-page__queue-section {
     height: 50%;
     margin: 2%;
-    display: flex;
-    justify-content: space-around;
+}
+
+.patient-page__queue-section h1 {
+    margin-left: 43%;
 }
 
 .patient-page__queue-section input {
@@ -54,7 +56,6 @@ body {
 .patient-page__resolution-section {
     height: 50%;
     display: flex;
-    justify-content: space-around;
 }
 
 .patient-page__resolution-section input {
@@ -64,16 +65,6 @@ body {
     outline: none;
     font-size: 18px;
     margin-top: 3%;
-}
-
-.patient-page__resolution-section div {
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
-    width: 45%;
-    height: 80%;
-    text-align: center;
-    border-radius: 10px;
 }
 
 .doctor-page__set-resolution-section, .doctor-page__find-resolution-section, .doctor-page__patient-section{
@@ -90,7 +81,6 @@ body {
     height: 33%;
 
 }
-
 
 .doctor-page__set-resolution-section input {
     height: 5rem;
@@ -119,19 +109,16 @@ body {
     padding: 0.4em;
 }
 
-.doctor-page__find-resolution-section div {
-    border-color: black;
-    border-style: solid;
-    border-width: 1px;
-    text-align: center;
-    margin-bottom: 5px;
-}
-
 .doctor-page__find-resolution-section input {
     height: 3em;
     width: 20em;
     border-radius: 10px;
     margin-bottom: 5px;
+}
+
+.doctor-page__find-resolution-section table {
+    margin-top: 30px;
+    width: 100%;
 }
 
 .doctor-page__find-resolution-section button {
@@ -146,4 +133,39 @@ body {
 #foundResolutionField__patientInterface{
     width: 100%;
     height: auto;
+}
+
+#select-doctor {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    margin-left: 40%;
+}
+
+#select-doctor select{
+    margin-top: 4px;
+    height: 30px;
+}
+
+#addNewPatientButton {
+    margin-left: 40%;
+    margin-top: 15px;
+    width: 20%;
+}
+
+.resolution_table {
+    border-collapse: collapse;
+    width: 80%;
+    margin-left: 10%;
+}
+
+.resolution_table tr td {
+    border: 1px solid black;
+    padding: 4px;
+}
+
+.resolution_table th {
+    border: 1px solid black;
+    padding: 4px;
+    text-align: center;
 }

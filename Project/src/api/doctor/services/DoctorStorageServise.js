@@ -20,7 +20,6 @@ export class DoctorStorageService {
         }
     }
 
-
     async getDoctor(name, id, email, userID) {
         try {
             let result;
@@ -45,7 +44,6 @@ export class DoctorStorageService {
             return err;
         }
     }
-
 }
 
 const doctorStorageService = new DoctorStorageService(doctorRepository, specializationRepository, specDoctorRepository);

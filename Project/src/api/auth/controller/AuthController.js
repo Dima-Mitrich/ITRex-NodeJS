@@ -4,7 +4,7 @@ import jwtService from '../services/JwtService.js';
 import resultHandler from '../../helpers/resultHandler.js';
 import calculateAge from '../../helpers/calculateAge.js';
 import patientController from '../../patient/controller/PatientController.js';
-import doctorController from '../../doktor/controller/DoctorController.js';
+import doctorController from '../../doctor/controller/DoctorController.js';
 import {
     STATUSES, WRONG_EMAIL_MESSAGE, WRONG_PASSWORD_MESSAGE, NO_TOKEN_MESSAGE, EMAIL_IS_EXIST,
     WRONG_BIRTHDAY_DATE, USER_TYPE,

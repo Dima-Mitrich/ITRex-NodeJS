@@ -1,7 +1,7 @@
-import patientController from '../../src/api/patient/controller/PatientController.js';
-import doctorController from '../../src/api/doktor/controller/DoctorController.js';
-import authController from '../../src/api/auth/controller/AuthController.js';
-import { STATUSES, EMAIL_IS_EXIST, WRONG_PASSWORD_MESSAGE, WRONG_EMAIL_MESSAGE } from '../../src/constants.js';
+import patientController from '../../patient/controller/PatientController.js';
+import doctorController from '../../doctor/controller/DoctorController.js';
+import authController from '../controller/AuthController.js';
+import { STATUSES, EMAIL_IS_EXIST, WRONG_PASSWORD_MESSAGE, WRONG_EMAIL_MESSAGE } from '../../../constants.js';
 
 
 const {userService,jwtService } = authController;

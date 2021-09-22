@@ -1,4 +1,4 @@
-import { TTL_MILSEC, NOT_FOUND_MESSAGE, SUCCESS_MESSAGE } from '../../../constants.js';
+import { SUCCESS_MESSAGE } from '../../../constants.js';
 
 export default class MySQLResolution {
     constructor(resolutionsModel, patientsModel, doctorModel, doctorUserModel) {
@@ -8,24 +8,17 @@ export default class MySQLResolution {
         this.doctorUserModel = doctorUserModel;
     }
 
-    async push(resolutionObj, ttl, userID, spec) {
-        const { patientID } = resolutionObj;
-
-        const doctor = await this.doctorModel.findOne({
-            include: {
-                model: this.doctorUserModel,
-                where: {
-                    user_id: userID,
-                },
-            },
-        });
+    async push(resolutionObj, doctorId) {
+        const {
+            patientID, ttl, content, id,
+        } = resolutionObj;
 
         const result = await this.resolutionsModel.create({
-            id: resolutionObj.id,
+            id,
             patientId: patientID,
-            doctorId: doctor.id,
-            content: resolutionObj.content,
-            speciality: spec,
+            doctorId,
+            content,
+            speciality: resolutionObj.spec,
             ttl,
         });
 
@@ -34,7 +27,7 @@ export default class MySQLResolution {
 
     async findResolutionByName(name) {
         const result = await this.resolutionsModel.findAll({
-            attributes: ['id', 'content', 'speciality', 'createdAt'],
+            attributes: ['id', 'content', 'speciality', 'createdAt', 'ttl'],
             include: [{
                 model: this.patientsModel,
                 as: 'patient',
@@ -56,7 +49,7 @@ export default class MySQLResolution {
 
     async findResolutionByUserId(userId) {
         const result = await this.resolutionsModel.findAll({
-            attributes: ['id', 'content', 'speciality', 'createdAt'],
+            attributes: ['id', 'content', 'speciality', 'createdAt', 'ttl'],
             include: [{
                 model: this.patientsModel,
                 as: 'patient',
@@ -84,5 +77,11 @@ export default class MySQLResolution {
         });
 
         return SUCCESS_MESSAGE;
+    }
+
+    async getResolutionById(id) {
+        const res = await this.resolutionsModel.findByPk(id);
+
+        return res;
     }
 }

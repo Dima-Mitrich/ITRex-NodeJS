@@ -1,23 +1,19 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import { STATUSES } from '../constants.js';
 import resolutionController from '../api/resolution/controller/ResolutionController.js';
 import authController from '../api/auth/controller/AuthController.js';
-import { validateNewResolution, validateNameParams, validateIdParams } from '../api/helpers/validate.js';
-import checkTokenPatient from '../api/helpers/checkTokenPatient.js';
-import checkTokenDoctor from '../api/helpers/checkTokenDoktor.js';
+import newResolutionMiddleware from '../api/helpers/middlewares/newResolutionMiddleware.js';
+import idValidateMiddleware from '../api/helpers/middlewares/idValidateMiddleware.js';
+import nameValidateMiddleware from '../api/helpers/middlewares/nameValidateMiddleware.js';
+import checkTokenPatient from '../api/helpers/middlewares/checkTokenPatient.js';
+import checkTokenDoctor from '../api/helpers/middlewares/checkTokenDoctor.js';
 
 const resolutionRouter = express.Router();
 
 resolutionRouter.use('/', express.json());
 resolutionRouter.use('/', cookieParser());
-resolutionRouter.use('/', express.json());
 
-resolutionRouter.post('/', checkTokenDoctor, (req, res, next) => {
-    validateNewResolution(req.body)
-        ? next()
-        : res.status(STATUSES.BadRequest).send(validateNewResolution.errors);
-}, async (req, res) => {
+resolutionRouter.post('/', checkTokenDoctor, newResolutionMiddleware, async (req, res) => {
     const {
         newResolutionContent, currentPatient, ttl, spec,
     } = req.body;
@@ -34,31 +30,23 @@ resolutionRouter.post('/', checkTokenDoctor, (req, res, next) => {
     res.status(result.status).send(result.value);
 });
 
-resolutionRouter.delete('/:resID', (req, res, next) => {
-    validateIdParams(req.params.resID)
-        ? next()
-        : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
-}, async (req, res) => {
-    const result = await resolutionController.deleteResolution(req.params.resID);
+resolutionRouter.delete('/:id', idValidateMiddleware, async (req, res) => {
+    const doc = await authController.checkToken(req.cookies.jwtDoctor);
+    const result = await resolutionController.deleteResolution(req.params.id, doc.value.id);
 
     res.status(result.status).send(result.value);
 });
 
-resolutionRouter.get('/:name', checkTokenDoctor, (req, res, next) => {
-    validateNameParams(req.params.name)
-        ? next()
-        : res.status(STATUSES.BadRequest).send(validateNameParams.errors);
-}, async (req, res) => {
-    const result = await resolutionController.findResolutionsByName({ name: req.params.name, role: req.role });
-
-    res.status(result.status).send(result.value);
-});
-
-resolutionRouter.get('/', checkTokenPatient, async (req, res) => {
-
+resolutionRouter.get('/me', checkTokenPatient, async (req, res) => {
     const result = await resolutionController.findResolutionsByUserId({ userID: req.userID, role: req.role });
 
     res.status(result.status).json(result.value);
+});
+
+resolutionRouter.get('/:name', checkTokenDoctor, nameValidateMiddleware, async (req, res) => {
+    const result = await resolutionController.findResolutionsByName({ name: req.params.name, role: req.role });
+
+    res.status(result.status).send(result.value);
 });
 
 export default resolutionRouter;

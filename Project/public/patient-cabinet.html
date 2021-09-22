@@ -15,14 +15,19 @@
         <div class="patient-page">
             <div class="patient-page__queue-section">
                 <section>
-                    <h1>Cabinet</h1>
-                    <h2>Your status:</h2>
+                    <h1>Patient cabinet</h1>
                     <div id="patient-current-status"></div>
                 </section>
-                <form name="add_in_queue_form">
-                    <div id="spec_list"></div>
-                    <button class="button" id="addNewPatientButton">Take the queue</button>
-                </form>
+                <div id="select-doctor">
+                    <label for="speciality-list">Choose speciality</label>
+                    <select id="speciality-list">
+                        <option value="" selected disabled hidden></option>
+                    </select>
+                    <label for="doctors-list">Choose doctor</label>
+                    <select id='doctors-list' disabled>
+                    </select>
+                </div>
+                <button class="button" id="addNewPatientButton">Take the queue</button>
             </div>
             <div class="patient-page__resolution-section">
                 <div id="foundResolutionField__patientInterface">Found resolution</div>

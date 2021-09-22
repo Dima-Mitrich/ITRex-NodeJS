@@ -8,7 +8,7 @@ export default async function userDefine(sequelize) {
             type: DataTypes.UUID,
             allowNull: false,
             primaryKey: true,
-            unique: true,
+            unique: 'user_id',
         },
         password: {
             type: DataTypes.STRING,
@@ -17,17 +17,17 @@ export default async function userDefine(sequelize) {
         login: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true,
+            unique: 'login',
         },
         role: {
             type: DataTypes.STRING,
             allowNull: false,
         },
     });
-
+    /*
     try {
-        //await sequelize.models.user.sync({ force: true });
+        await sequelize.models.user.sync({ force: true });
     } catch (err) {
         console.log(err);
-    }
+    } */
 }

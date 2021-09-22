@@ -6,35 +6,28 @@ export class QueueService {
         this.queueRepository = queueRepository;
     }
 
-    async addPatient(id, spec) {
+    async addPatient(id, docID) {
         try {
-            const result = await this.queueRepository.push(id, spec);
+            const result = await this.queueRepository.push(id, docID);
 
             return result;
         } catch (err) {
             console.log(err);
 
-            return err;//при отсутствии пациента в очереди  на фронте не появл статус 409 и ошибка
+            return err;// при отсутствии пациента в очереди  на фронте не появл статус 409 и ошибка
         }
     }
 
-    async takePatient(spec) {
-        try {
-            const patientID = await this.queueRepository.shift(spec);
+    async takePatient(docID) {
+        const patientID = await this.queueRepository.shift(docID);
 
-            if (!patientID) {
-                throw new Error(NOT_FOUND_MESSAGE);
-            } else return patientID;
-        } catch (err) {
-            console.log(err);
-
-            return err;
-        }
+        if (!patientID) throw new Error(NOT_FOUND_MESSAGE);
+        return patientID;
     }
 
-    async isEmpty(spec) {
+    async isEmpty(docID) {
         try {
-            const result = await this.queueRepository.isEmpty(spec);
+            const result = await this.queueRepository.isEmpty(docID);
 
             return result;
         } catch (err) {

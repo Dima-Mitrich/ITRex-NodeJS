@@ -49,17 +49,12 @@ export class SpecStorageService {
         try {
             const result = await specializationRepository.getAllSpec();
 
-            const specData = [];
-            result.forEach((elem, i) => {
-                specData[i] = elem.dataValues.specialization;
-            });
+            if (!result) throw new Error(NOT_FOUND_MESSAGE);
 
-            if (result) {
-                return specData;
-            } else {
-                throw new Error(NOT_FOUND_MESSAGE);
-            }
+            return result;
         } catch (err) {
+            console.log(err);
+
             return err;
         }
     }

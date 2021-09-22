@@ -1,6 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import patientController from '../../patient/controller/PatientController.js';
-import Resolution from '../../interface/Resolution.js';
 import resolutionStorageService from '../services/ResolutionStorageService.js';
 import resultHandler from '../../helpers/resultHandler.js';
 import { STATUSES, USER_TYPE } from '../../../constants.js';
@@ -14,19 +12,29 @@ class ResolutionController {
         const {
             resolution, patientID, ttl, userID, spec,
         } = resData;
-        const resolutionObj = new Resolution(resolution, patientID, uuidv4());
         const resObj = {
-            resolutionObj, ttl, userID, spec,
+            id: uuidv4(),
+            content: resolution,
+            ttl,
+            userID,
+            spec,
+            patientID,
         };
         const result = await this.resolutionListService.addNewResolution(resObj);
 
         return resultHandler(result, STATUSES.Created);
     }
 
-    async deleteResolution(resolutionID) {
-        const result = await this.resolutionListService.deleteResolution(resolutionID);
+    async deleteResolution(resolutionID, userID) {
+        try {
+            const result = await this.resolutionListService.deleteResolution(resolutionID, userID);
 
-        return resultHandler(result, STATUSES.OK);
+            return resultHandler(result, STATUSES.NoContent);
+        } catch (err) {
+            console.log(err);
+
+            return resultHandler(err);
+        }
     }
 
     async findResolutionsByName({ name, role }) {

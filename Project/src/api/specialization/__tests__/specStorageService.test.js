@@ -1,9 +1,9 @@
-import specStorageService from '../../src/api/specialization/services/SpecStorageService.js';
+import specStorageService from '../services/SpecStorageService.js';
 
 const specializationRepository = specStorageService.specializationRepository;
 const spec = 'dentist';
 
-describe('doctor service have to', () => {
+describe('specialization service have to', () => {
 
   test('add spec', async () => {
     specializationRepository.addSpec = jest.fn(() =>({dataValues:{spec:'111'}}));
@@ -30,11 +30,11 @@ describe('doctor service have to', () => {
   });
 
   test('get specializations list', async () => {
-    specializationRepository.getAllSpec = jest.fn(() =>([{ dataValues:{specialization:'dentist'}}]));
+    specializationRepository.getAllSpec = jest.fn(() =>([{specialization:'dentist'}]));
     const res = await specStorageService.getSpecList('222');
 
     expect(specializationRepository.getAllSpec).toBeCalled();
-    expect(res).toEqual(['dentist']);
+    expect(res[0].specialization).toBe('dentist');
   });
 
 });

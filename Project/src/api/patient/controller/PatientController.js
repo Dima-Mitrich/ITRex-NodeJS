@@ -15,9 +15,9 @@ class PatientController {
         return resultHandler(result, STATUSES.Created);
     }
 
-    async addInQueue(userID, spec) {
+    async addInQueue(userID, docID) {
         const patient = await this.getPatient({ userID });
-        const result = await this.queueService.addPatient(patient.value.id, spec);
+        const result = await this.queueService.addPatient(patient.value.id, docID);
 
         return resultHandler(result, STATUSES.Created);
     }
@@ -29,18 +29,24 @@ class PatientController {
         return resultHandler(patient, STATUSES.OK);
     }
 
-    async shiftPatient(spec) {
-        const patientID = await this.queueService.takePatient(spec);
+    async shiftPatient(docID) {
+        try {
+            const patientID = await this.queueService.takePatient(docID);
 
-        const patient = await this.getPatient({ id: patientID });
+            const patient = await this.getPatient({ id: patientID });
 
-        if (patient.status !== STATUSES.NotFound) {
-            const isEmpty = await this.isEmpty(spec);
-            patient.value.last = isEmpty;
+            if (patient.status !== STATUSES.NotFound) {
+                const isEmpty = await this.isEmpty(docID);
+                patient.value.last = isEmpty;
+                return patient;
+            }
+
             return patient;
-        }
+        } catch (err) {
+            console.log(err);
 
-        return patient;
+            return resultHandler(err);
+        }
     }
 
     async isExist(patient) {
@@ -54,8 +60,8 @@ class PatientController {
         return false;
     }
 
-    async isEmpty(spec) {
-        const result = this.queueService.isEmpty(spec);
+    async isEmpty(docID) {
+        const result = this.queueService.isEmpty(docID);
 
         return result;
     }

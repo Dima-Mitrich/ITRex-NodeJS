@@ -27,10 +27,10 @@ export default async function patientDefine(sequelize) {
             allowNull: false,
         },
     });
-
+    /*
     try {
-        //await sequelize.models.patient.sync({ force: true });
+        await sequelize.models.patient.sync({ force: true });
     } catch (err) {
         console.log(err);
-    }
+    } */
 }
